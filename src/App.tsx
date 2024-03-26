@@ -4,6 +4,8 @@ import { WeatherTypes } from "./types/type";
 
 function App() {
   const [weatherInfo, setWeatherInfo] = useState<WeatherTypes>();
+  const [precipitation, setPrecipitation] = useState<number>();
+
   const api_key: string = apiKey.key;
   const uuid = crypto.randomUUID();
 
@@ -17,9 +19,12 @@ function App() {
       })
       .then((weather) => weather.json())
       .then((data) => {
-        console.log(data);
-
         setWeatherInfo(data);
+        "rain" in data
+          ? setPrecipitation(data.rain["1h"])
+          : "snow" in data
+          ? setPrecipitation(data.snow["1h"])
+          : null;
       });
   };
 
@@ -58,7 +63,6 @@ function App() {
         weatherInfo.weather.map((weather) => (
           <div key={uuid}>
             <div>{weather.description}</div>
-            {/* <div className="text">{weather.main}</div> */}
             <img
               src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
               alt=""
@@ -66,20 +70,17 @@ function App() {
           </div>
         ))}
       <div>
-        Wind:&nbsp;
-        {weatherInfo?.wind.speed} <abbr title="Kilometers per Hour">km/h</abbr>
+        <div>
+          Wind:&nbsp;
+          {weatherInfo?.wind.speed} &nbsp;
+          <abbr title="Kilometers per Hour">km/h</abbr>
+        </div>
+        <div>
+          Precipitation: &nbsp;
+          {precipitation !== undefined || null ? precipitation : 0} &nbsp;
+          <abbr title="Milimeter">mm</abbr>
+        </div>
       </div>
-
-      {weatherInfo !== undefined && "rain" in weatherInfo && (
-        <div>
-          {weatherInfo?.rain["1h"]} <abbr title="Milimeter">mm</abbr>
-        </div>
-      )}
-      {weatherInfo !== undefined && "snow" in weatherInfo && (
-        <div>
-          {weatherInfo?.snow["1h"]} <abbr title="Milimeter">mm</abbr>
-        </div>
-      )}
     </>
   );
 }
