@@ -1,4 +1,4 @@
-export type Weather = {
+export type WeatherTypes = {
   coord: {
     lon: number;
     lat: number;
@@ -27,6 +27,9 @@ export type Weather = {
     gust: number;
   };
   rain: {
+    "1h": number;
+  };
+  snow: {
     "1h": number;
   };
   clouds: {
