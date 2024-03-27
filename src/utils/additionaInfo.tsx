@@ -1,10 +1,10 @@
 export function AdditionalInfo({
-  title,
+  name,
   value,
   unit,
   shortUnit,
 }: {
-  title: string;
+  name: string;
   value: number;
   unit: string;
   shortUnit: string;
@@ -12,7 +12,7 @@ export function AdditionalInfo({
   return (
     <>
       <p>
-        {title}: &nbsp;{value} &nbsp;<abbr title={unit}>{shortUnit}</abbr>
+        {name}: &nbsp;{value} &nbsp;<abbr title={unit}>{shortUnit}</abbr>
       </p>
     </>
   );

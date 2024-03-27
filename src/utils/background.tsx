@@ -1,8 +1,8 @@
-export function Background() {
-  // const currentDate = new Date();
-  // const isDay = currentDate.getHours() >= 18 ? "night" : "day";
+export function Background({ time }: { time: string }) {
+  const currentDate = new Date(time);
+  const isDay = currentDate.getHours() >= 18 ? "night" : "day";
 
-  const isDay = "day";
+  // const isDay = "day";
   return (
     <div className="fixed z-[-1] w-full">
       <img

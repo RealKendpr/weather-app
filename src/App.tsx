@@ -13,17 +13,20 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [precipitation, setPrecipitation] = useState<number>(0);
   const [windSpeed, setWindSpeed] = useState<number>(0);
-  const api_key: string = apiKey.key;
+  const [time, setTime] = useState<string>("");
+  const weatherKey: string = apiKey.weatherKey;
+  const geoKey: string = apiKey.geoKey;
   const uuid = crypto.randomUUID();
   const isWeatherInfo = weatherInfo !== undefined || null ? true : false;
 
   const handleFetch = async () => {
     setLoading(true);
-    await fetch("https://api.techniknews.net/ipgeo/")
+    await fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${geoKey}`)
       .then((geo) => geo.json())
       .then((data) => {
+        setTime(data.time_zone.current_time);
         return fetch(
-          `https://api.openweathermap.org/data/2.5/weather?lat=${data.lat}&lon=${data.lon}&appid=${api_key}&units=metric`,
+          `https://api.openweathermap.org/data/2.5/weather?lat=${data.latitude}&lon=${data.longitude}&appid=${weatherKey}&units=metric`,
         );
       })
       .then((weather) => weather.json())
@@ -52,47 +55,49 @@ function App() {
   // }, 60000);
 
   return (
-    <div className="grid h-screen w-full place-items-center">
-      <Background></Background>
-      <WeatherContext.Provider value={weatherInfo}>
-        <div className="grid gap-12">
-          <GeoLocation></GeoLocation>
-          <div>
-            {weatherInfo &&
-              weatherInfo.weather.map((weather) => (
-                <div key={uuid}>
-                  <div className="flex justify-center">
-                    {/* <img
+    <>
+      <div className="grid min-h-screen w-full place-items-center">
+        <Background time={time}></Background>
+        <WeatherContext.Provider value={weatherInfo}>
+          <div className="grid gap-12">
+            <GeoLocation time={time}></GeoLocation>
+            <div>
+              {weatherInfo &&
+                weatherInfo.weather.map((weather) => (
+                  <div key={uuid}>
+                    <div className="flex justify-center">
+                      {/* <img
                     src={`https://openweathermap.org/img/wn/${weather.icon}@4x.png`}
                     alt=""
                   /> */}
+                    </div>
+                    <div className="text-center text-5xl font-bold">
+                      {weatherInfo?.main.temp} &deg;c
+                    </div>
+                    <div className="text-center">{weather.description}</div>
                   </div>
-                  <div className="text-center text-5xl font-bold">
-                    {weatherInfo?.main.temp} &deg;c
-                  </div>
-                  <div className="text-center">{weather.description}</div>
-                </div>
-              ))}
+                ))}
+            </div>
+            <div className="flex gap-4">
+              <AdditionalInfo
+                name="Wind"
+                value={windSpeed}
+                unit="Kilometer per Hour"
+                shortUnit="km/h"
+              ></AdditionalInfo>
+              <AdditionalInfo
+                name="Precipitation"
+                value={precipitation}
+                unit="Milimeter"
+                shortUnit="mm"
+              ></AdditionalInfo>
+            </div>
           </div>
-          <div className="flex gap-4">
-            <AdditionalInfo
-              title="Wind"
-              value={windSpeed}
-              unit="Kilometer per Hour"
-              shortUnit="km/h"
-            ></AdditionalInfo>
-            <AdditionalInfo
-              title="Precipitation"
-              value={precipitation}
-              unit="Milimeter"
-              shortUnit="mm"
-            ></AdditionalInfo>
-          </div>
-        </div>
-      </WeatherContext.Provider>
+        </WeatherContext.Provider>
+        <Buttons weatherInfo={isWeatherInfo} action={refresh}></Buttons>
+      </div>
       <Loading loading={loading}></Loading>
-      <Buttons weatherInfo={isWeatherInfo} action={refresh}></Buttons>
-    </div>
+    </>
   );
 }
 
