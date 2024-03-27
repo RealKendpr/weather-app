@@ -35,6 +35,10 @@ function App() {
   const month = currentDate.toLocaleString(userLang, { month: "long" });
   const date = currentDate.getDate();
 
+  const amPm = currentDate.getHours() >= 12 ? "pm" : "am";
+  // console.log(amPm);
+  // const amPm = "pm";
+
   useEffect(() => {
     geoLocation();
   }, []);
@@ -44,44 +48,61 @@ function App() {
   };
 
   return (
-    <>
-      <button
-        className="bg-gray-50 font-bold px-4 py-1 disabled:bg-slate-600"
-        disabled={weatherInfo === undefined || weatherInfo === null}
-        onClick={handleClick}
-      >
-        Get Weather
-      </button>
-      <div>{weatherInfo?.name}</div>
-      <div>
-        <span>{day}</span>, &nbsp;
-        <span>{month}</span> &nbsp;
-        <span>{date}</span>
+    <div className="grid h-screen place-items-center w-full">
+      <div className="fixed z-[-1]">
+        <img
+          className={
+            amPm === "am"
+              ? "object-cover w-full h-screen object-[center_left]"
+              : " object-cover w-full h-screen object-center"
+          }
+          src={
+            amPm === "am"
+              ? "./src/assets/day.jpg"
+              : "./src/assets/night-clear.jpg"
+          }
+          alt=""
+        />
       </div>
-      <div>{weatherInfo?.main.temp}</div>
-      {weatherInfo &&
-        weatherInfo.weather.map((weather) => (
-          <div key={uuid}>
-            <div>{weather.description}</div>
-            <img
-              src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
-              alt=""
-            />
+      <div>
+        <button
+          className="bg-gray-50 font-bold px-4 py-1 disabled:bg-slate-600"
+          disabled={weatherInfo === undefined || weatherInfo === null}
+          onClick={handleClick}
+        >
+          Get Weather
+        </button>
+        <div>{weatherInfo?.name}</div>
+        <div>
+          <span>{day}</span>, &nbsp;
+          <span>{month}</span> &nbsp;
+          <span>{date}</span>
+        </div>
+        <div>{weatherInfo?.main.temp}</div>
+        {weatherInfo &&
+          weatherInfo.weather.map((weather) => (
+            <div key={uuid}>
+              <div>{weather.description}</div>
+              <img
+                src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
+                alt=""
+              />
+            </div>
+          ))}
+        <div>
+          <div>
+            Wind:&nbsp;
+            {weatherInfo?.wind.speed} &nbsp;
+            <abbr title="Kilometers per Hour">km/h</abbr>
           </div>
-        ))}
-      <div>
-        <div>
-          Wind:&nbsp;
-          {weatherInfo?.wind.speed} &nbsp;
-          <abbr title="Kilometers per Hour">km/h</abbr>
-        </div>
-        <div>
-          Precipitation: &nbsp;
-          {precipitation !== undefined || null ? precipitation : 0} &nbsp;
-          <abbr title="Milimeter">mm</abbr>
+          <div>
+            Precipitation: &nbsp;
+            {precipitation !== undefined || null ? precipitation : 0} &nbsp;
+            <abbr title="Milimeter">mm</abbr>
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
