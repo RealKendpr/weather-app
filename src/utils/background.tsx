@@ -1,6 +1,5 @@
-export function Background({ time }: { time: string }) {
-  const currentDate = new Date(time);
-  const isDay = currentDate.getHours() >= 18 ? "night" : "day";
+export function Background({ time }: { time: Date }) {
+  const isDay = time.getHours() >= 18 ? "night" : "day";
 
   // const isDay = "day";
   return (

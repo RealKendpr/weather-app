@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import apiKey from "./Data/api_key.json";
 import { WeatherTypes } from "./types/type";
 import { AdditionalInfo } from "./utils/additionaInfo";
-import { Loading } from "./loading";
+import { Status } from "./fetchStatus";
 import { Buttons } from "./utils/buttons";
 import { GeoLocation } from "./geoLocation";
 import { WeatherContext } from "./context/context";
@@ -10,21 +10,26 @@ import { Background } from "./utils/background";
 
 function App() {
   const [weatherInfo, setWeatherInfo] = useState<WeatherTypes>();
-  const [loading, setLoading] = useState(false);
+
+  const [failedFetch, setFailedFetch] = useState(false);
+  const [errText, setErrText] = useState<string>("");
+  const [loading, setLoading] = useState(true);
+
   const [precipitation, setPrecipitation] = useState<number>(0);
   const [windSpeed, setWindSpeed] = useState<number>(0);
-  const [time, setTime] = useState<string>("");
-  const weatherKey: string = apiKey.weatherKey;
-  const geoKey: string = apiKey.geoKey;
+  const [time, setTime] = useState<Date | null>(null);
+
   const uuid = crypto.randomUUID();
   const isWeatherInfo = weatherInfo !== undefined || null ? true : false;
 
   const handleFetch = async () => {
-    setLoading(true);
+    const weatherKey: string = apiKey.weatherKey;
+    const geoKey: string = apiKey.geoKey;
+
     await fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${geoKey}`)
       .then((geo) => geo.json())
       .then((data) => {
-        setTime(data.time_zone.current_time);
+        setTime(new Date(data.time_zone.current_time));
         return fetch(
           `https://api.openweathermap.org/data/2.5/weather?lat=${data.latitude}&lon=${data.longitude}&appid=${weatherKey}&units=metric`,
         );
@@ -38,8 +43,13 @@ function App() {
             ? setPrecipitation(data.snow["1h"])
             : null;
         setWindSpeed(data.wind.speed);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setErrText(err);
+        setFailedFetch(true);
+        setLoading(false);
       });
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -47,6 +57,7 @@ function App() {
   }, []);
 
   const refresh = () => {
+    setLoading(true);
     handleFetch();
   };
 
@@ -57,10 +68,10 @@ function App() {
   return (
     <>
       <div className="grid min-h-screen w-full place-items-center">
-        <Background time={time}></Background>
+        {time && <Background time={time}></Background>}
         <WeatherContext.Provider value={weatherInfo}>
           <div className="grid gap-12">
-            <GeoLocation time={time}></GeoLocation>
+            {time && <GeoLocation time={time}></GeoLocation>}
             <div>
               {weatherInfo &&
                 weatherInfo.weather.map((weather) => (
@@ -96,7 +107,8 @@ function App() {
         </WeatherContext.Provider>
         <Buttons weatherInfo={isWeatherInfo} action={refresh}></Buttons>
       </div>
-      <Loading loading={loading}></Loading>
+      <Status status={loading} text="Loading..."></Status>
+      <Status status={failedFetch} text={`${errText}`}></Status>
     </>
   );
 }
