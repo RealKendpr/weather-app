@@ -1,0 +1,23 @@
+import { useContext } from "react";
+import { WeatherContext } from "./context/context";
+
+export function GeoLocation() {
+  const userLang = navigator.language;
+  const currentDate = new Date();
+  const day = currentDate.toLocaleString(userLang, { weekday: "long" });
+  const month = currentDate.toLocaleString(userLang, { month: "long" });
+  const date = currentDate.getDate();
+
+  const weatherInfo = useContext(WeatherContext);
+
+  return (
+    <div>
+      <div className="text-2xl font-bold">{weatherInfo?.name}</div>
+      <div className="text-sm font-semibold">
+        <span>{day}</span>, &nbsp;
+        <span>{month}</span> &nbsp;
+        <span>{date}</span>
+      </div>
+    </div>
+  );
+}
