@@ -8,13 +8,15 @@ import { GeoLocation } from "./geoLocation";
 import { WeatherContext } from "./context/context";
 import { Background } from "./utils/background";
 
-import dayjs, { tz } from "dayjs";
+import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+// import localizedFormat from "dayjs/plugin/localizedFormat";
 
 function App() {
   dayjs.extend(utc);
   dayjs.extend(timezone);
+  // dayjs.extend(localizedFormat);
   const [weatherInfo, setWeatherInfo] = useState<WeatherTypes>();
 
   const [failedFetch, setFailedFetch] = useState(false);
@@ -34,30 +36,35 @@ function App() {
     const weatherKey: string = apiKey.weatherKey;
     const geoKey: string = apiKey.geoKey;
 
-    await fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${geoKey}`)
-      .then((geo) => geo.json())
-      .then((data) => {
-        setTime(data.time_zone);
-        return fetch(
-          `https://api.openweathermap.org/data/2.5/weather?lat=${data.latitude}&lon=${data.longitude}&appid=${weatherKey}&units=metric`,
-        );
-      })
-      .then((weather) => weather.json())
-      .then((data) => {
-        setWeatherInfo(data);
-        "rain" in data
-          ? setPrecipitation(data.rain["1h"])
-          : "snow" in data
-            ? setPrecipitation(data.snow["1h"])
-            : null;
-        setWindSpeed(data.wind.speed);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setErrText(err);
-        setFailedFetch(true);
-        setLoading(false);
-      });
+    try {
+      const geoResponse = await fetch(
+        `https://api.ipgeolocation.io/ipgeo?apiKey=${geoKey}`,
+      );
+      const geoData = await geoResponse.json();
+
+      setTime(geoData.time_zone);
+
+      const weatherResponse = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${geoData.latitude}&lon=${geoData.longitude}&appid=${weatherKey}&units=metric`,
+      );
+      const weatherData = await weatherResponse.json();
+
+      setWeatherInfo(weatherData);
+
+      "rain" in weatherData
+        ? setPrecipitation(weatherData.rain["1h"])
+        : "snow" in weatherData
+          ? setPrecipitation(weatherData.snow["1h"])
+          : null;
+
+      setWindSpeed(weatherData.wind.speed);
+
+      setLoading(false);
+    } catch (err) {
+      setErrText(err as string);
+      setFailedFetch(true);
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -76,8 +83,8 @@ function App() {
   return (
     <>
       <div className="grid min-h-screen w-full place-items-center">
-        {time && <Background isDay={isDay}></Background>}
         <WeatherContext.Provider value={weatherInfo}>
+          {time && <Background isDay={isDay}></Background>}
           <div className="grid gap-12">
             {time && (
               <GeoLocation
