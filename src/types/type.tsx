@@ -48,3 +48,16 @@ export type WeatherTypes = {
   name: string;
   cod: number;
 };
+
+export type TimeZoneTypes = {
+  name: string;
+  offset: number;
+  offset_with_dst: number;
+  current_time: string;
+  current_time_unix: number;
+  is_dst: boolean;
+  dst_savings: number;
+  dst_exists: boolean;
+  dst_start: string;
+  dst_end: string;
+};

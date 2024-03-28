@@ -1,5 +1,14 @@
-export function Background({ time }: { time: Date }) {
-  const isDay = time.getHours() >= 18 ? "night" : "day";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+export function Background({ time, tz }: { time: string; tz: string }) {
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
+
+  const date = dayjs(time).tz(tz);
+
+  const isDay = date.hour() >= 18 ? "night" : "day";
 
   // const isDay = "day";
   return (

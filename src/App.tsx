@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import apiKey from "./Data/api_key.json";
-import { WeatherTypes } from "./types/type";
+import { TimeZoneTypes, WeatherTypes } from "./types/type";
 import { AdditionalInfo } from "./utils/additionaInfo";
 import { Status } from "./fetchStatus";
 import { Buttons } from "./utils/buttons";
@@ -17,10 +17,11 @@ function App() {
 
   const [precipitation, setPrecipitation] = useState<number>(0);
   const [windSpeed, setWindSpeed] = useState<number>(0);
-  const [time, setTime] = useState<Date | null>(null);
+  const [time, setTime] = useState<TimeZoneTypes>();
 
   const uuid = crypto.randomUUID();
   const isWeatherInfo = weatherInfo !== undefined || null ? true : false;
+  // const isNight = time !== null && time.getHours() >= 18 ? true : false;
 
   const handleFetch = async () => {
     const weatherKey: string = apiKey.weatherKey;
@@ -29,7 +30,7 @@ function App() {
     await fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${geoKey}`)
       .then((geo) => geo.json())
       .then((data) => {
-        setTime(new Date(data.time_zone.current_time));
+        setTime(data.time_zone);
         return fetch(
           `https://api.openweathermap.org/data/2.5/weather?lat=${data.latitude}&lon=${data.longitude}&appid=${weatherKey}&units=metric`,
         );
@@ -68,10 +69,17 @@ function App() {
   return (
     <>
       <div className="grid min-h-screen w-full place-items-center">
-        {time && <Background time={time}></Background>}
+        {time && (
+          <Background time={time.current_time} tz={time.name}></Background>
+        )}
         <WeatherContext.Provider value={weatherInfo}>
           <div className="grid gap-12">
-            {time && <GeoLocation time={time}></GeoLocation>}
+            {time && (
+              <GeoLocation
+                time={time.current_time}
+                tz={time.name}
+              ></GeoLocation>
+            )}
             <div>
               {weatherInfo &&
                 weatherInfo.weather.map((weather) => (

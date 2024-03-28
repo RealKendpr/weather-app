@@ -1,21 +1,24 @@
 import { useContext } from "react";
 import { WeatherContext } from "./context/context";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 
-export function GeoLocation({ time }: { time: Date }) {
-  const userLang = navigator.language;
-  const day = time.toLocaleString(userLang, { weekday: "long" });
-  const month = time.toLocaleString(userLang, { month: "long" });
-  const date = time.getDate();
+export function GeoLocation({ time, tz }: { time: string; tz: string }) {
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
+  // const userLang = navigator.language;
 
+  const date = dayjs(time).tz(tz);
   const weatherInfo = useContext(WeatherContext);
 
   return (
     <div>
       <div className="text-2xl font-bold">{weatherInfo?.name}</div>
       <div className="text-sm font-semibold">
-        <span>{day}</span>, &nbsp;
-        <span>{month}</span> &nbsp;
-        <span>{date}</span>
+        <span>{date.format("dddd")}</span>, &nbsp;
+        <span>{date.format("MMMM")}</span> &nbsp;
+        <span>{date.format('D')}</span>
       </div>
     </div>
   );
