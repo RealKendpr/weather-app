@@ -18,7 +18,7 @@ export function GeoLocation({ time, tz }: { time: string; tz: string }) {
       <div className="text-sm font-semibold">
         <span>{date.format("dddd")}</span>, &nbsp;
         <span>{date.format("MMMM")}</span> &nbsp;
-        <span>{date.format('D')}</span>
+        <span>{date.format("D")}</span>
       </div>
     </div>
   );

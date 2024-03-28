@@ -8,7 +8,13 @@ import { GeoLocation } from "./geoLocation";
 import { WeatherContext } from "./context/context";
 import { Background } from "./utils/background";
 
+import dayjs, { tz } from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
 function App() {
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
   const [weatherInfo, setWeatherInfo] = useState<WeatherTypes>();
 
   const [failedFetch, setFailedFetch] = useState(false);
@@ -21,7 +27,8 @@ function App() {
 
   const uuid = crypto.randomUUID();
   const isWeatherInfo = weatherInfo !== undefined || null ? true : false;
-  // const isNight = time !== null && time.getHours() >= 18 ? true : false;
+  const isDay =
+    dayjs(time?.current_time).tz(time?.name).hour() >= 18 ? false : true;
 
   const handleFetch = async () => {
     const weatherKey: string = apiKey.weatherKey;
@@ -69,9 +76,7 @@ function App() {
   return (
     <>
       <div className="grid min-h-screen w-full place-items-center">
-        {time && (
-          <Background time={time.current_time} tz={time.name}></Background>
-        )}
+        {time && <Background isDay={isDay}></Background>}
         <WeatherContext.Provider value={weatherInfo}>
           <div className="grid gap-12">
             {time && (
