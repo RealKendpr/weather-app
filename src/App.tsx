@@ -27,7 +27,7 @@ function App() {
   const [windSpeed, setWindSpeed] = useState<number>(0);
   const [time, setTime] = useState<TimeZoneTypes>();
 
-  const uuid = crypto.randomUUID();
+  // const uuid = crypto.randomUUID();
   const isWeatherInfo = weatherInfo !== undefined || null ? true : false;
   const isDay =
     dayjs(time?.current_time).tz(time?.name).hour() >= 18 ? false : true;
@@ -62,10 +62,17 @@ function App() {
 
           setWindSpeed(weatherData.wind.speed);
           setLoading(false);
+        } else {
+          throw new Error("Failed To Fetch The Weather Information");
         }
-        throw new Error("Failed To Fetch The Weather Information");
+        //~~~~~~~~~~~~
+      } else if (geoResponse.status === 429) {
+        throw new Error(
+          "The data request limit of this application has exceeded",
+        );
+      } else {
+        throw new Error("Failed To Establish Your Area");
       }
-      throw new Error("Failed To Establish Your Area");
     } catch (err) {
       setErrText(err as string);
       setFailedFetch(true);
@@ -99,20 +106,15 @@ function App() {
               ></GeoLocation>
             )}
             <div>
-              {weatherInfo?.weather.map((weather) => (
-                <div key={uuid}>
-                  <div className="flex justify-center">
-                    {/* <img
-                    src={`https://openweathermap.org/img/wn/${weather.icon}@4x.png`}
-                    alt=""
-                  /> */}
-                  </div>
-                  <div className="text-center text-5xl font-bold">
-                    {weatherInfo?.main.temp} &deg;c
-                  </div>
-                  <div className="text-center">{weather.description}</div>
+              <div className="text-center text-5xl font-bold">
+                {weatherInfo?.main.temp} &deg;c
+              </div>
+              <div className="text-center">{weatherInfo?.weather[0].main}</div>
+              {/* {weatherInfo?.weather.map((weather) => (
+                <div key={weather.id} className="text-center">
+                  {weather.description}
                 </div>
-              ))}
+              ))} */}
             </div>
             <div className="flex gap-4">
               <AdditionalInfo
