@@ -15,6 +15,15 @@ export function Background({ isDay }: { isDay: boolean }) {
           case "Clear":
             return "clear-day.jpg";
           case "Atmosphere":
+          case "Mist":
+          case "Smoke":
+          case "Haze":
+          case "Dust":
+          case "Fog":
+          case "Sand":
+          case "Ash":
+          case "Squail":
+          case "Tornado":
             return "atmosphere.jpg";
           case "Snow":
             return "snow-day.jpg";
@@ -33,6 +42,7 @@ export function Background({ isDay }: { isDay: boolean }) {
           case "Clear":
             return "clear-night.jpg";
           case "Atmosphere":
+          case "Mist":
             return "atmosphere.jpg";
           case "Snow":
             return "snow-night.jpg";
