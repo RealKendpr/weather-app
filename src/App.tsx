@@ -40,26 +40,32 @@ function App() {
       const geoResponse = await fetch(
         `https://api.ipgeolocation.io/ipgeo?apiKey=${geoKey}`,
       );
-      const geoData = await geoResponse.json();
+      if (geoResponse.ok) {
+        const geoData = await geoResponse.json();
 
-      setTime(geoData.time_zone);
+        setTime(geoData.time_zone);
 
-      const weatherResponse = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${geoData.latitude}&lon=${geoData.longitude}&appid=${weatherKey}&units=metric`,
-      );
-      const weatherData = await weatherResponse.json();
+        const weatherResponse = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?lat=${geoData.latitude}&lon=${geoData.longitude}&appid=${weatherKey}&units=metric`,
+        );
 
-      setWeatherInfo(weatherData);
+        if (weatherResponse.ok) {
+          const weatherData = await weatherResponse.json();
 
-      "rain" in weatherData
-        ? setPrecipitation(weatherData.rain["1h"])
-        : "snow" in weatherData
-          ? setPrecipitation(weatherData.snow["1h"])
-          : null;
+          setWeatherInfo(weatherData);
 
-      setWindSpeed(weatherData.wind.speed);
+          "rain" in weatherData
+            ? setPrecipitation(weatherData.rain["1h"])
+            : "snow" in weatherData
+              ? setPrecipitation(weatherData.snow["1h"])
+              : null;
 
-      setLoading(false);
+          setWindSpeed(weatherData.wind.speed);
+          setLoading(false);
+        }
+        throw new Error("Failed To Fetch The Weather Information");
+      }
+      throw new Error("Failed To Establish Your Area");
     } catch (err) {
       setErrText(err as string);
       setFailedFetch(true);
@@ -93,21 +99,20 @@ function App() {
               ></GeoLocation>
             )}
             <div>
-              {weatherInfo &&
-                weatherInfo.weather.map((weather) => (
-                  <div key={uuid}>
-                    <div className="flex justify-center">
-                      {/* <img
+              {weatherInfo?.weather.map((weather) => (
+                <div key={uuid}>
+                  <div className="flex justify-center">
+                    {/* <img
                     src={`https://openweathermap.org/img/wn/${weather.icon}@4x.png`}
                     alt=""
                   /> */}
-                    </div>
-                    <div className="text-center text-5xl font-bold">
-                      {weatherInfo?.main.temp} &deg;c
-                    </div>
-                    <div className="text-center">{weather.description}</div>
                   </div>
-                ))}
+                  <div className="text-center text-5xl font-bold">
+                    {weatherInfo?.main.temp} &deg;c
+                  </div>
+                  <div className="text-center">{weather.description}</div>
+                </div>
+              ))}
             </div>
             <div className="flex gap-4">
               <AdditionalInfo
