@@ -7,7 +7,6 @@ import timezone from "dayjs/plugin/timezone";
 export function GeoLocation({ time, tz }: { time: string; tz: string }) {
   dayjs.extend(utc);
   dayjs.extend(timezone);
-  // const userLang = navigator.language;
 
   const date = dayjs(time).tz(tz);
   const weatherInfo = useContext(WeatherContext);
