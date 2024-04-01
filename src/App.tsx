@@ -25,6 +25,13 @@ function App() {
 
   const [precipitation, setPrecipitation] = useState<number>(0);
   const [windSpeed, setWindSpeed] = useState<number>(0);
+
+  const geoData = (): {} => {
+    const localValue = sessionStorage.getItem("GEODATA");
+    localValue === null && [];
+    return localValue ? JSON.parse(localValue) : null;
+  };
+
   const [time, setTime] = useState<TimeZoneTypes>();
 
   // const uuid = crypto.randomUUID();
@@ -32,40 +39,99 @@ function App() {
   const isDay =
     dayjs(time?.current_time).tz(time?.name).hour() >= 18 ? false : true;
 
-  const handleFetch = async () => {
+  const fetchWeather = async (latitude: number, longitude: number) => {
     const weatherKey: string = apiKey.weatherKey;
-    const geoKey: string = apiKey.geoKey;
+    try {
+      const weatherResponse = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${weatherKey}&units=metric`,
+      );
+      if (weatherResponse.ok) {
+        const weatherData = await weatherResponse.json();
 
+        setWeatherInfo(weatherData);
+
+        "rain" in weatherData
+          ? setPrecipitation(weatherData.rain["1h"])
+          : "snow" in weatherData
+            ? setPrecipitation(weatherData.snow["1h"])
+            : null;
+
+        setWindSpeed(weatherData.wind.speed);
+        setLoading(false);
+      } else {
+        throw new Error("Failed To Fetch The Weather Information");
+      }
+    } catch (err) {
+      setErrText(err as string);
+      setFailedFetch(true);
+      setLoading(false);
+    }
+  };
+
+  // const handleFetch = async () => {
+  //   const weatherKey: string = apiKey.weatherKey;
+  //   const geoKey: string = apiKey.geoKey;
+
+  //   try {
+  //     const geoResponse = await fetch(
+  //       `https://api.ipgeolocation.io/ipgeo?apiKey=${geoKey}`,
+  //     );
+  //     if (geoResponse.ok) {
+  //       const geoData = await geoResponse.json();
+
+  //       setTime(geoData.time_zone);
+
+  //       const weatherResponse = await fetch(
+  //         `https://api.openweathermap.org/data/2.5/weather?lat=${geoData.latitude}&lon=${geoData.longitude}&appid=${weatherKey}&units=metric`,
+  //       );
+
+  //       if (weatherResponse.ok) {
+  //         const weatherData = await weatherResponse.json();
+
+  //         setWeatherInfo(weatherData);
+
+  //         "rain" in weatherData
+  //           ? setPrecipitation(weatherData.rain["1h"])
+  //           : "snow" in weatherData
+  //             ? setPrecipitation(weatherData.snow["1h"])
+  //             : null;
+
+  //         setWindSpeed(weatherData.wind.speed);
+  //         setLoading(false);
+  //       } else {
+  //         throw new Error("Failed To Fetch The Weather Information");
+  //       }
+  //       //~~~~~~~~~~~~
+  //     } else if (geoResponse.status === 429) {
+  //       throw new Error(
+  //         "The data request limit of this application has exceeded",
+  //       );
+  //     } else {
+  //       throw new Error("Failed To Establish Your Area");
+  //     }
+  //   } catch (err) {
+  //     setErrText(err as string);
+  //     setFailedFetch(true);
+  //     setLoading(false);
+  //   }
+  // };
+
+  const handleFetch = async () => {
+    const geoData = await fetchGeo();
+    fetchWeather(geoData.latitude, geoData.longitude);
+  };
+
+  const fetchGeo = async () => {
+    const geoKey: string = apiKey.geoKey;
     try {
       const geoResponse = await fetch(
         `https://api.ipgeolocation.io/ipgeo?apiKey=${geoKey}`,
       );
       if (geoResponse.ok) {
         const geoData = await geoResponse.json();
-
         setTime(geoData.time_zone);
-
-        const weatherResponse = await fetch(
-          `https://api.openweathermap.org/data/2.5/weather?lat=${geoData.latitude}&lon=${geoData.longitude}&appid=${weatherKey}&units=metric`,
-        );
-
-        if (weatherResponse.ok) {
-          const weatherData = await weatherResponse.json();
-
-          setWeatherInfo(weatherData);
-
-          "rain" in weatherData
-            ? setPrecipitation(weatherData.rain["1h"])
-            : "snow" in weatherData
-              ? setPrecipitation(weatherData.snow["1h"])
-              : null;
-
-          setWindSpeed(weatherData.wind.speed);
-          setLoading(false);
-        } else {
-          throw new Error("Failed To Fetch The Weather Information");
-        }
-        //~~~~~~~~~~~~
+        sessionStorage.setItem("GEODATA", JSON.stringify(geoData));
+        return geoData;
       } else if (geoResponse.status === 429) {
         throw new Error(
           "The data request limit of this application has exceeded",
@@ -86,7 +152,7 @@ function App() {
 
   const refresh = () => {
     setLoading(true);
-    handleFetch();
+    // handleFetch();
   };
 
   // setTimeout(() => {
