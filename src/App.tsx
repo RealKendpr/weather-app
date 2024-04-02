@@ -21,9 +21,8 @@ function App() {
   const [weatherInfo, setWeatherInfo] = useState<WeatherTypes>();
   const [geoInfo, setGeoInfo] = useState<GeoDataTypes>();
 
-  const [failedFetch, setFailedFetch] = useState(false);
+  const [status, setStatus] = useState<string>("Loading");
   const [errText, setErrText] = useState<string>("");
-  const [loading, setLoading] = useState(true);
 
   const [precipitation, setPrecipitation] = useState<number>(0);
   const [windSpeed, setWindSpeed] = useState<number>(0);
@@ -55,8 +54,7 @@ function App() {
       }
     } catch (err) {
       setErrText(err as string);
-      setFailedFetch(true);
-      setLoading(false);
+      setStatus("Error");
     }
   };
 
@@ -78,27 +76,26 @@ function App() {
             : null;
 
         setWindSpeed(weatherData.wind.speed);
-        setLoading(false);
+        setStatus("Ok");
       } else {
         throw new Error("Failed To Fetch The Weather Information");
       }
     } catch (err) {
       setErrText(err as string);
-      setFailedFetch(true);
-      setLoading(false);
+      setStatus("Error");
     }
   };
 
   useEffect(() => {
     const handleFirstFetch = async () => {
       const geoData = await fetchGeo();
-      fetchWeather(geoData.latitude, geoData.longitude);
+      await fetchWeather(geoData?.latitude ?? "", geoData?.longitude ?? "");
     };
     handleFirstFetch();
   }, []);
 
   const refresh = () => {
-    setLoading(true);
+    setStatus("Loading");
     fetchWeather(geoInfo?.latitude ?? "", geoInfo?.longitude ?? "");
   };
 
@@ -147,8 +144,16 @@ function App() {
         </WeatherContext.Provider>
         <Buttons weatherInfo={isWeatherInfo} action={refresh}></Buttons>
       </div>
-      <Status status={loading} text="Loading..."></Status>
-      <Status status={failedFetch} text={`${errText}`}></Status>
+      <Status
+        status={status}
+        text={
+          status === "Loading"
+            ? "Loading..."
+            : status === "Error"
+              ? `${errText}`
+              : ""
+        }
+      ></Status>
     </>
   );
 }
