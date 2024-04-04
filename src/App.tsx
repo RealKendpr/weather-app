@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import apiKey from "./Data/api_key.json";
 import { GeoDataTypes, WeatherTypes } from "./types/type";
 import { AdditionalInfo } from "./utils/additionaInfo";
 import { Status } from "./fetchStatus";
@@ -7,6 +6,7 @@ import { Buttons } from "./utils/buttons";
 import { GeoLocation } from "./geoLocation";
 import { WeatherContext } from "./context/context";
 import { Background } from "./utils/background";
+import { fetchGeo, fetchWeather } from "./utils/api";
 
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -18,8 +18,10 @@ function App() {
   dayjs.extend(timezone);
   // dayjs.extend(localizedFormat);
 
-  const [weatherInfo, setWeatherInfo] = useState<WeatherTypes>();
-  const [geoInfo, setGeoInfo] = useState<GeoDataTypes>();
+  const [weatherInfo, setWeatherInfo] = useState<
+    WeatherTypes | null | undefined
+  >(null);
+  const [geoInfo, setGeoInfo] = useState<GeoDataTypes | null | undefined>(null);
 
   const [status, setStatus] = useState<string>("Loading");
   const [errText, setErrText] = useState<string>("");
@@ -35,68 +37,36 @@ function App() {
       ? false
       : true;
 
-  const fetchGeo = async () => {
-    const geoKey: string = apiKey.geoKey;
-    try {
-      const geoResponse = await fetch(
-        `https://api.ipgeolocation.io/ipgeo?apiKey=${geoKey}`,
-      );
-      if (geoResponse.ok) {
-        const geoData = await geoResponse.json();
-        setGeoInfo(geoData);
-        return await geoData;
-      } else if (geoResponse.status === 429) {
-        throw new Error(
-          "The data request limit of this application has exceeded",
-        );
-      } else {
-        throw new Error("Failed To Establish Your Area");
-      }
-    } catch (err) {
-      setErrText(err as string);
+  const handleWeatherFetch = (geoInfo: GeoDataTypes | null | undefined) => {
+    if (geoInfo == null) {
+      setErrText("Failed To Establish Your Area");
       setStatus("Error");
-    }
-  };
-
-  const fetchWeather = async (latitude: string, longitude: string) => {
-    const weatherKey: string = apiKey.weatherKey;
-    try {
-      const weatherResponse = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${weatherKey}&units=metric`,
-      );
-      if (weatherResponse.ok) {
-        const weatherData = await weatherResponse.json();
-
-        setWeatherInfo(weatherData);
-
-        "rain" in weatherData
-          ? setPrecipitation(weatherData.rain["1h"])
-          : "snow" in weatherData
-            ? setPrecipitation(weatherData.snow["1h"])
-            : null;
-
-        setWindSpeed(weatherData.wind.speed);
-        setStatus("Ok");
-      } else {
-        throw new Error("Failed To Fetch The Weather Information");
-      }
-    } catch (err) {
-      setErrText(err as string);
+    } else if (geoInfo?.latitude == null && geoInfo.longitude == null) {
+      setErrText("Failed To Establish Your Area");
       setStatus("Error");
-    }
+    } else
+      fetchWeather(
+        geoInfo.latitude,
+        geoInfo.longitude,
+        setWeatherInfo,
+        setPrecipitation,
+        setWindSpeed,
+        setStatus,
+        setErrText,
+      );
   };
 
   useEffect(() => {
     const handleFirstFetch = async () => {
-      const geoData = await fetchGeo();
-      await fetchWeather(geoData?.latitude ?? "", geoData?.longitude ?? "");
+      const localGeoInfo = await fetchGeo(setErrText, setStatus, setGeoInfo);
+      handleWeatherFetch(localGeoInfo);
     };
     handleFirstFetch();
   }, []);
 
   const refresh = () => {
     setStatus("Loading");
-    fetchWeather(geoInfo?.latitude ?? "", geoInfo?.longitude ?? "");
+    handleWeatherFetch(geoInfo);
   };
 
   // setTimeout(() => {

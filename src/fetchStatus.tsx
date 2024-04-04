@@ -1,6 +1,4 @@
 export function Status({ status, text }: { status: string; text: string }) {
-  console.log(status);
-
   return (
     <>
       {status !== "Ok" ? (
