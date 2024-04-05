@@ -15,14 +15,14 @@ export function GeoLocation({ time, tz }: { time: string; tz: string }) {
   return (
     <div>
       <div
-        data-isDay={IsDay ? "true" : "false"}
-        className="data-isDay:text-slate-900 text-2xl font-bold text-slate-600"
+        data-isday={IsDay ? "true" : "false"}
+        className="data-isday:text-slate-900 font-display text-3xl font-semibold text-slate-300"
       >
         {weatherInfo?.name}
       </div>
       <div
-        data-isDay={IsDay ? "true" : "false"}
-        className="data-isDay:text-slate-900 text-sm font-semibold text-slate-600"
+        data-isday={IsDay ? "true" : "false"}
+        className="data-isday:text-slate-900 font-display text-xl font-medium text-slate-300"
       >
         <span>{date.format("dddd")}</span>, &nbsp;
         <span>{date.format("MMMM")}</span> &nbsp;

@@ -76,9 +76,9 @@ function App() {
   return (
     <>
       <IsDayContext.Provider value={isDay}>
-        <div className="grid min-h-screen w-full place-items-center">
-          <WeatherContext.Provider value={weatherInfo}>
-            {geoInfo?.time_zone && <Background></Background>}
+        <WeatherContext.Provider value={weatherInfo}>
+          {geoInfo?.time_zone && <Background></Background>}
+          <div className="m-auto w-4/5 pt-8">
             <div className="grid gap-12">
               {geoInfo?.time_zone && (
                 <GeoLocation
@@ -88,24 +88,60 @@ function App() {
               )}
               <div>
                 <div
-                  data-isDay={isDay ? "true" : "false"}
-                  className="data-isDay:text-slate-900 text-center text-5xl font-bold text-slate-600"
+                  data-isday={isDay ? "true" : "false"}
+                  className="text-center font-display text-[5.5rem] font-bold leading-tight text-slate-300 data-isday:text-slate-900"
                 >
-                  {weatherInfo?.main.temp} &deg;c
+                  {weatherInfo?.main.temp}&deg;c
                 </div>
-                <div
-                  data-isDay={isDay ? "true" : "false"}
-                  className="data-isDay:text-slate-900 text-center font-semibold text-slate-600"
-                >
-                  {weatherInfo?.weather[0].main}
+                <div className="flex flex-col items-center">
+                  <div
+                    data-isday={isDay ? "true" : "false"}
+                    className="flex items-center gap-1 font-display text-xl font-semibold text-slate-300 data-isday:text-slate-900"
+                  >
+                    <span>
+                      <svg
+                        aria-labelledby="max-min"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1.2em"
+                        height="1.2em"
+                        viewBox="0 0 24 24"
+                      >
+                        <title id="max-min">
+                          Minimum to Maximum Temperature
+                        </title>
+                        <path
+                          data-isday={isDay ? "true" : "false"}
+                          className="stroke-slate-300 data-isday:stroke-slate-900"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M8 20V10m0 10l-3-3m3 3l3-3m5-13v10m0-10l3 3m-3-3l-3 3"
+                        ></path>
+                      </svg>
+                    </span>
+                    <div>
+                      {weatherInfo?.main.temp_min ===
+                      weatherInfo?.main.temp_max ? (
+                        <>{weatherInfo?.main.temp_max}&deg;</>
+                      ) : (
+                        <>
+                          {weatherInfo?.main.temp_min}&deg; &mdash;{" "}
+                          {weatherInfo?.main.temp_max}&deg;
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  <div
+                    data-isday={isDay ? "true" : "false"}
+                    className="font-display text-xl font-semibold text-slate-300 data-isday:text-slate-900"
+                  >
+                    {weatherInfo?.weather[0].main}
+                  </div>
                 </div>
-                {/* {weatherInfo?.weather.map((weather) => (
-                <div key={weather.id} className="text-center">
-                {weather.description}
-                </div>
-              ))} */}
               </div>
-              <div className="flex gap-4">
+              <div className="flex justify-around gap-4">
                 <AdditionalInfo
                   name="Wind"
                   value={windSpeed}
@@ -120,9 +156,9 @@ function App() {
                 ></AdditionalInfo>
               </div>
             </div>
-          </WeatherContext.Provider>
-          <Buttons weatherInfo={isWeatherInfo} action={refresh}></Buttons>
-        </div>
+            <Buttons weatherInfo={isWeatherInfo} action={refresh}></Buttons>
+          </div>
+        </WeatherContext.Provider>
         <Status
           status={status}
           text={

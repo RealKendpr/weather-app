@@ -16,10 +16,11 @@ export function AdditionalInfo({
   return (
     <>
       <p
-        data-isDay={IsDay ? "true" : "false"}
-        className="data-isDay:text-slate-900 font-medium text-slate-600"
+        data-isday={IsDay ? "true" : "false"}
+        className="font-display font-medium text-slate-300 data-isday:text-slate-900"
       >
-        {name}: &nbsp;{value} &nbsp;<abbr title={unit}>{shortUnit}</abbr>
+        {name}:&nbsp;{value}&nbsp;
+        <abbr title={unit}>{shortUnit}</abbr>
       </p>
     </>
   );

@@ -2,9 +2,13 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        display: "Poppins, sans-serif",
+      },
+    },
     data: {
-      isDay: 'isDay="true"',
+      isday: 'isday="true"',
     },
   },
   plugins: [],
