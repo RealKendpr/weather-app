@@ -31,11 +31,12 @@ function App() {
 
   // const uuid = crypto.randomUUID();
   const isWeatherInfo = weatherInfo !== undefined || null ? true : false;
-  const isDay =
-    dayjs(geoInfo?.time_zone.current_time).tz(geoInfo?.time_zone.name).hour() >=
-    18
-      ? false
-      : true;
+  const currentHour = dayjs(geoInfo?.time_zone.current_time)
+    .tz(geoInfo?.time_zone.name)
+    .hour();
+  const isDay = !(currentHour >= 5 && currentHour < 17) ? false : true;
+
+  // api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
 
   const handleWeatherFetch = (geoInfo: GeoDataTypes | null | undefined) => {
     if (geoInfo == null) {
@@ -78,7 +79,7 @@ function App() {
       <IsDayContext.Provider value={isDay}>
         <WeatherContext.Provider value={weatherInfo}>
           {geoInfo?.time_zone && <Background></Background>}
-          <div className="m-auto w-4/5 pt-8">
+          <div className="m-auto w-4/5 pt-10">
             <div className="grid gap-12">
               {geoInfo?.time_zone && (
                 <GeoLocation
