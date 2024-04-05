@@ -4,7 +4,7 @@ import { AdditionalInfo } from "./utils/additionaInfo";
 import { Status } from "./fetchStatus";
 import { Buttons } from "./utils/buttons";
 import { GeoLocation } from "./geoLocation";
-import { WeatherContext } from "./context/context";
+import { IsDayContext, WeatherContext } from "./context/context";
 import { Background } from "./utils/background";
 import { fetchGeo, fetchWeather } from "./utils/api";
 
@@ -57,11 +57,11 @@ function App() {
   };
 
   useEffect(() => {
-    const handleFirstFetch = async () => {
+    const firstFetch = async () => {
       const localGeoInfo = await fetchGeo(setErrText, setStatus, setGeoInfo);
       handleWeatherFetch(localGeoInfo);
     };
-    handleFirstFetch();
+    firstFetch();
   }, []);
 
   const refresh = () => {
@@ -75,55 +75,65 @@ function App() {
 
   return (
     <>
-      <div className="grid min-h-screen w-full place-items-center">
-        <WeatherContext.Provider value={weatherInfo}>
-          {geoInfo?.time_zone && <Background isDay={isDay}></Background>}
-          <div className="grid gap-12">
-            {geoInfo?.time_zone && (
-              <GeoLocation
-                time={geoInfo.time_zone.current_time}
-                tz={geoInfo.time_zone.name}
-              ></GeoLocation>
-            )}
-            <div>
-              <div className="text-center text-5xl font-bold">
-                {weatherInfo?.main.temp} &deg;c
-              </div>
-              <div className="text-center">{weatherInfo?.weather[0].main}</div>
-              {/* {weatherInfo?.weather.map((weather) => (
+      <IsDayContext.Provider value={isDay}>
+        <div className="grid min-h-screen w-full place-items-center">
+          <WeatherContext.Provider value={weatherInfo}>
+            {geoInfo?.time_zone && <Background></Background>}
+            <div className="grid gap-12">
+              {geoInfo?.time_zone && (
+                <GeoLocation
+                  time={geoInfo.time_zone.current_time}
+                  tz={geoInfo.time_zone.name}
+                ></GeoLocation>
+              )}
+              <div>
+                <div
+                  data-isDay={isDay ? "true" : "false"}
+                  className="data-isDay:text-slate-900 text-center text-5xl font-bold text-slate-600"
+                >
+                  {weatherInfo?.main.temp} &deg;c
+                </div>
+                <div
+                  data-isDay={isDay ? "true" : "false"}
+                  className="data-isDay:text-slate-900 text-center font-semibold text-slate-600"
+                >
+                  {weatherInfo?.weather[0].main}
+                </div>
+                {/* {weatherInfo?.weather.map((weather) => (
                 <div key={weather.id} className="text-center">
-                  {weather.description}
+                {weather.description}
                 </div>
               ))} */}
+              </div>
+              <div className="flex gap-4">
+                <AdditionalInfo
+                  name="Wind"
+                  value={windSpeed}
+                  unit="Kilometer per Hour"
+                  shortUnit="km/h"
+                ></AdditionalInfo>
+                <AdditionalInfo
+                  name="Precipitation"
+                  value={precipitation}
+                  unit="Milimeter"
+                  shortUnit="mm"
+                ></AdditionalInfo>
+              </div>
             </div>
-            <div className="flex gap-4">
-              <AdditionalInfo
-                name="Wind"
-                value={windSpeed}
-                unit="Kilometer per Hour"
-                shortUnit="km/h"
-              ></AdditionalInfo>
-              <AdditionalInfo
-                name="Precipitation"
-                value={precipitation}
-                unit="Milimeter"
-                shortUnit="mm"
-              ></AdditionalInfo>
-            </div>
-          </div>
-        </WeatherContext.Provider>
-        <Buttons weatherInfo={isWeatherInfo} action={refresh}></Buttons>
-      </div>
-      <Status
-        status={status}
-        text={
-          status === "Loading"
-            ? "Loading..."
-            : status === "Error"
-              ? `${errText}`
-              : ""
-        }
-      ></Status>
+          </WeatherContext.Provider>
+          <Buttons weatherInfo={isWeatherInfo} action={refresh}></Buttons>
+        </div>
+        <Status
+          status={status}
+          text={
+            status === "Loading"
+              ? "Loading..."
+              : status === "Error"
+                ? `${errText}`
+                : ""
+          }
+        ></Status>
+      </IsDayContext.Provider>
     </>
   );
 }

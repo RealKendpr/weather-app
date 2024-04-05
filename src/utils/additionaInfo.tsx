@@ -1,3 +1,6 @@
+import { useContext } from "react";
+import { IsDayContext } from "../context/context";
+
 export function AdditionalInfo({
   name,
   value,
@@ -9,9 +12,13 @@ export function AdditionalInfo({
   unit: string;
   shortUnit: string;
 }) {
+  const IsDay = useContext(IsDayContext);
   return (
     <>
-      <p>
+      <p
+        data-isDay={IsDay ? "true" : "false"}
+        className="data-isDay:text-slate-900 font-medium text-slate-600"
+      >
         {name}: &nbsp;{value} &nbsp;<abbr title={unit}>{shortUnit}</abbr>
       </p>
     </>
