@@ -59,7 +59,6 @@ export const fetchWeather = async (
     );
     if (weatherResponse.ok) {
       const weatherData = await weatherResponse.json();
-
       setWeatherInfo(weatherData);
 
       "rain" in weatherData
