@@ -26,7 +26,7 @@ jobs:
         run: npm run build
         env:
           VITE_GEO_KEY: ${{ secrets.VITE_GEO_KEY }}
-          # VITE_WEATHER_KEY: ${{ secrets.VITE_WEATHER_KEY }}
+          VITE_WEATHER_KEY: ${{ secrets.VITE_WEATHER_KEY }}
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v2
