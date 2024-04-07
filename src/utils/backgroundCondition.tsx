@@ -4,7 +4,6 @@ import { WeatherContext } from "../context/context";
 export const BackgroundCondition = (isDay: boolean | undefined) => {
   const weatherInfo = useContext(WeatherContext);
   const weatherStatus = weatherInfo?.weather[0].main;
-  console.log(weatherInfo);
 
   switch (isDay) {
     case true:
