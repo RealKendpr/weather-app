@@ -4,6 +4,7 @@ import { WeatherContext } from "../context/context";
 export const BackgroundCondition = (isDay: boolean | undefined) => {
   const weatherInfo = useContext(WeatherContext);
   const weatherStatus = weatherInfo?.weather[0].main;
+  console.log(weatherInfo);
 
   switch (isDay) {
     case true:
@@ -41,6 +42,14 @@ export const BackgroundCondition = (isDay: boolean | undefined) => {
           return "clear-night.jpg";
         case "Atmosphere":
         case "Mist":
+        case "Smoke":
+        case "Haze":
+        case "Dust":
+        case "Fog":
+        case "Sand":
+        case "Ash":
+        case "Squail":
+        case "Tornado":
           return "atmosphere.jpg";
         case "Snow":
           return "snow-night.jpg";
