@@ -13,7 +13,7 @@ export function Background() {
         ></div>
         <img
           className="pointer-events-none h-full w-full select-none object-cover object-center"
-          src={`src/assets/backgrounds/${BackgroundCondition(IsDay)}`}
+          src={`./src/assets/backgrounds/${BackgroundCondition(IsDay)}`}
           alt=""
         />
       </div>
