@@ -1,4 +1,3 @@
-import apiKey from "../Data/api_key.json";
 import { GeoDataTypes, WeatherTypes } from "../types/type";
 
 export const fetchGeo = async (
@@ -8,7 +7,8 @@ export const fetchGeo = async (
     React.SetStateAction<GeoDataTypes | null | undefined>
   >,
 ) => {
-  const geoKey: string = apiKey.geoKey;
+  const geoKey: string = import.meta.env.VITE_GEO_KEY;
+
   try {
     const geoResponse = await fetch(
       `https://api.ipgeolocation.io/ipgeo?apiKey=${geoKey}`,
@@ -52,7 +52,7 @@ export const fetchWeather = async (
   setStatus: React.Dispatch<React.SetStateAction<string>>,
   setErrText: React.Dispatch<React.SetStateAction<string>>,
 ) => {
-  const weatherKey: string = apiKey.weatherKey;
+  const weatherKey: string = import.meta.env.VITE_WEATHER_KEY;
   try {
     const weatherResponse = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${weatherKey}&units=metric`,
@@ -77,4 +77,18 @@ export const fetchWeather = async (
     setErrText(err instanceof Error ? err.message : (err as string));
     setStatus("Error");
   }
+};
+
+export const fetchForecast = async (latitude: string, longitude: string) => {
+  // api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
+  const weatherKey: string = import.meta.env.VITE_WEATHER_KEY;
+  try {
+    const forecastResponse = await fetch(
+      `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${weatherKey}`,
+    );
+    if (forecastResponse.ok) {
+      const forecastData = await forecastResponse.json();
+      return forecastData;
+    }
+  } catch (error) {}
 };
