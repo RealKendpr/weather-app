@@ -29,9 +29,8 @@ export function HourlyForecast({
     (i) => parseDate(i.dt_txt) == todayDate.format("YYYY-MM-DD"),
   );
 
-  const math = (dt: number) => {
+  const nowIndicator = (dt: number) => {
     return dt >= currentHour && dt <= currentHour + 3;
-    // return dt === currentHour && dt < currentHour + 3;
   };
 
   return (
@@ -40,11 +39,15 @@ export function HourlyForecast({
       <div className="flex gap-4 overflow-auto text-center">
         {todayForecast?.map((i) => (
           <div key={i.dt} className="bg-slate-300 p-4">
-            {math(handlTime(i.dt_txt).hour()) ? <div>now</div> : null}
-            <div>time_zone: {parseHour(i.dt_txt)}</div>
-            <div>time_zone: {parseDate(i.dt_txt)}</div>
-            <div>UTC: {i.dt_txt.split(" ")[1].split(":")[0] + ":00"}</div>
-            <div>UTC: {i.dt_txt.split(" ")[0]}</div>
+            {nowIndicator(handlTime(i.dt_txt).hour()) ? (
+              <div>now</div>
+            ) : (
+              <div>{parseHour(i.dt_txt)}</div>
+            )}
+            <img
+              src={`https://openweathermap.org/img/wn/${i.weather[0].icon}@4x.png`}
+              alt=""
+            />
             <div>{i.main.temp}&deg;c</div>
           </div>
         ))}
@@ -52,17 +55,3 @@ export function HourlyForecast({
     </div>
   );
 }
-
-/* <div>{time(i.dt)  currentHour && time(i.dt) +  ? time(i.dt) : "now"}</div> */
-/* <div>{time(i.dt)}</div> */
-/* <div>{i.dt_txt.split(" ")[1].split(":")[0] + ":00"}</div> */
-
-// const todayForecast = listItem.filter(
-//   (i) => i.dt_txt.split(" ")[0] == todayDate.format("YYYY-MM-DD"),
-// );
-
-// const forecast = await fetchForecast(
-//   localGeoInfo?.latitude,
-//   localGeoInfo?.longitude,
-// );
-// console.log(forecast);
