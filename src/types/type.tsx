@@ -71,7 +71,7 @@ export type GeoDataTypes = {
   };
 };
 
-export type Forecast = {
+export type ForecastDataTypes = {
   cod: string;
   message: number;
   cnt: number;

@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { GeoDataTypes, WeatherTypes } from "./types/type";
+import { GeoDataTypes, WeatherTypes, ForecastDataTypes } from "./types/type";
 import { AdditionalInfo } from "./utils/additionaInfo";
 import { Status } from "./fetchStatus";
 import { Buttons } from "./utils/buttons";
 import { GeoLocation } from "./geoLocation";
 import { IsDayContext, WeatherContext } from "./context/context";
 import { Background } from "./utils/background";
-import { fetchGeo, fetchWeather } from "./utils/api";
+import { fetchGeo, fetchWeather, fetchForecast } from "./utils/api";
+import { HourlyForecast } from "./forecast";
 
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -22,6 +23,9 @@ function App() {
     WeatherTypes | null | undefined
   >(null);
   const [geoInfo, setGeoInfo] = useState<GeoDataTypes | null | undefined>(null);
+  const [forecastInfo, setForecastInfo] = useState<
+    ForecastDataTypes | null | undefined
+  >(null);
 
   const [status, setStatus] = useState<string>("Loading");
   const [errText, setErrText] = useState<string>("");
@@ -36,9 +40,9 @@ function App() {
     .hour();
   const isDay = !(currentHour >= 5 && currentHour < 17) ? false : true;
 
-  // api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
-
-  const handleWeatherFetch = (geoInfo: GeoDataTypes | null | undefined) => {
+  const handleWeatherFetch = async (
+    geoInfo: GeoDataTypes | null | undefined,
+  ) => {
     if (geoInfo == null) {
       setErrText("Failed To Establish Your Area");
       setStatus("Error");
@@ -46,7 +50,7 @@ function App() {
       setErrText("Failed To Establish Your Area");
       setStatus("Error");
     } else
-      fetchWeather(
+      await fetchWeather(
         geoInfo.latitude,
         geoInfo.longitude,
         setWeatherInfo,
@@ -60,7 +64,12 @@ function App() {
   useEffect(() => {
     const firstFetch = async () => {
       const localGeoInfo = await fetchGeo(setErrText, setStatus, setGeoInfo);
-      handleWeatherFetch(localGeoInfo);
+      await handleWeatherFetch(localGeoInfo);
+      await fetchForecast(
+        localGeoInfo?.latitude,
+        localGeoInfo?.longitude,
+        setForecastInfo,
+      );
     };
     firstFetch();
   }, []);
@@ -79,7 +88,7 @@ function App() {
       <IsDayContext.Provider value={isDay}>
         <WeatherContext.Provider value={weatherInfo}>
           {geoInfo?.time_zone && <Background></Background>}
-          <div className="m-auto w-4/5 pt-10">
+          <div className="m-auto min-h-dvh w-4/5 pt-10">
             <div className="grid gap-12">
               {geoInfo?.time_zone && (
                 <GeoLocation
@@ -157,6 +166,10 @@ function App() {
                 ></AdditionalInfo>
               </div>
             </div>
+            <HourlyForecast
+              forecast={forecastInfo}
+              geoInfo={geoInfo}
+            ></HourlyForecast>
             <Buttons weatherInfo={isWeatherInfo} action={refresh}></Buttons>
           </div>
         </WeatherContext.Provider>

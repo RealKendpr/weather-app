@@ -1,4 +1,4 @@
-import { GeoDataTypes, WeatherTypes } from "../types/type";
+import { ForecastDataTypes, GeoDataTypes, WeatherTypes } from "../types/type";
 
 export const fetchGeo = async (
   setErrText: React.Dispatch<React.SetStateAction<string>>,
@@ -78,16 +78,21 @@ export const fetchWeather = async (
   }
 };
 
-export const fetchForecast = async (latitude: string, longitude: string) => {
-  // api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
+export const fetchForecast = async (
+  latitude: string,
+  longitude: string,
+  setForecastInfo: React.Dispatch<
+    React.SetStateAction<ForecastDataTypes | null | undefined>
+  >,
+) => {
   const weatherKey: string = import.meta.env.VITE_WEATHER_KEY;
   try {
     const forecastResponse = await fetch(
-      `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${weatherKey}`,
+      `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${weatherKey}&units=metric`,
     );
     if (forecastResponse.ok) {
       const forecastData = await forecastResponse.json();
-      return forecastData;
-    }
+      setForecastInfo(forecastData);
+    } else throw new Error("Failed To Fetch Forecast Data");
   } catch (error) {}
 };
