@@ -86,7 +86,7 @@ function App() {
       <IsDayContext.Provider value={isDay}>
         <WeatherContext.Provider value={weatherInfo}>
           {geoInfo?.time_zone && <Background></Background>}
-          <div className="m-auto min-h-dvh w-4/5 pt-10">
+          <div className="mx-auto flex h-dvh w-11/12 flex-col justify-around">
             <div className="grid gap-12">
               {geoInfo?.time_zone && (
                 <GeoLocation
@@ -168,8 +168,8 @@ function App() {
               forecast={forecastInfo}
               geoInfo={geoInfo}
             ></HourlyForecast>
-            <Buttons weatherInfo={isWeatherInfo} action={refresh}></Buttons>
           </div>
+          <Buttons weatherInfo={isWeatherInfo} action={refresh}></Buttons>
           <DaysForecast
             forecast={forecastInfo}
             geoInfo={geoInfo}
