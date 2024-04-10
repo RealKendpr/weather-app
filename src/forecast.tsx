@@ -34,7 +34,13 @@ export function HourlyForecast({
   );
 
   const nowIndicator = (dt: number) => {
-    return dt >= currentHour && dt <= currentHour + 3;
+    return currentHour >= dt - 1 && currentHour <= dt + 1;
+    // return dt >= currentHour && dt <= currentHour + 3;
+    // return dt === currentHour && dt < currentHour + 3;
+
+    //* this is what its supposed to do:
+    //? -return true if the currentHour is within range of dt, dt => currentHour < dt
+    //? -return true if the currentHour is inside dt
   };
 
   return (
@@ -48,6 +54,7 @@ export function HourlyForecast({
             ) : (
               <div>{parseLocalHour(i.dt_txt)}</div>
             )}
+            <div>{parseLocalHour(i.dt_txt)}</div>
             <img
               src={`https://openweathermap.org/img/wn/${i.weather[0].icon}@4x.png`}
               alt=""
@@ -75,10 +82,10 @@ export function DaysForecast({
 
   const todayDate = dayjs(geoInfo?.time_zone.current_time);
 
-  const groupedDaysForecast: { [key: string]: Array<ForecastListTypes> } =
+  const groupedDaysForecast: { [key: string]: ForecastListTypes[] } =
     forecast.list.reduce(
       (
-        accumulator: { [key: string]: Array<ForecastListTypes> },
+        accumulator: { [key: string]: ForecastListTypes[] },
         i: ForecastListTypes,
       ) => {
         const forecastDate: string = parseLocalDate(i.dt_txt);
@@ -94,17 +101,19 @@ export function DaysForecast({
       {},
     );
 
-  const minMaxForecast: Array<{
+  const minMaxForecast: {
     min: ForecastListTypes;
     max: ForecastListTypes;
-  }> = Object.values(groupedDaysForecast).map((i: Array<ForecastListTypes>) => {
-    const maxTemp: number = Math.max(...i.map((x) => x.main.temp));
+  }[] = Object.values(groupedDaysForecast).map((i: ForecastListTypes[]) => {
     const minTemp: number = Math.min(...i.map((x) => x.main.temp));
+    const maxTemp: number = Math.max(...i.map((x) => x.main.temp));
 
-    const maxObj: ForecastListTypes =
-      i.find((x) => x.main.temp === maxTemp) || ({} as ForecastListTypes);
-    const minObj: ForecastListTypes =
-      i.find((x) => x.main.temp === minTemp) || ({} as ForecastListTypes);
+    const minObj: ForecastListTypes = i.filter(
+      (x) => x.main.temp === minTemp,
+    )[0];
+    const maxObj: ForecastListTypes = i.filter(
+      (x) => x.main.temp === maxTemp,
+    )[0];
 
     return { min: minObj, max: maxObj };
   });
