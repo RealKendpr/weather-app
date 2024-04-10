@@ -3,9 +3,7 @@ import { ForecastDataTypes, GeoDataTypes, WeatherTypes } from "../types/type";
 export const fetchGeo = async (
   setErrText: React.Dispatch<React.SetStateAction<string>>,
   setStatus: React.Dispatch<React.SetStateAction<string>>,
-  setGeoInfo: React.Dispatch<
-    React.SetStateAction<GeoDataTypes | null | undefined>
-  >,
+  setGeoInfo: React.Dispatch<React.SetStateAction<GeoDataTypes | null>>,
 ) => {
   const geoKey: string = import.meta.env.VITE_GEO_KEY;
 
@@ -44,9 +42,7 @@ export const fetchGeo = async (
 export const fetchWeather = async (
   latitude: string,
   longitude: string,
-  setWeatherInfo: React.Dispatch<
-    React.SetStateAction<WeatherTypes | null | undefined>
-  >,
+  setWeatherInfo: React.Dispatch<React.SetStateAction<WeatherTypes | null>>,
   setPrecipitation: React.Dispatch<React.SetStateAction<number>>,
   setWindSpeed: React.Dispatch<React.SetStateAction<number>>,
   setStatus: React.Dispatch<React.SetStateAction<string>>,
@@ -82,7 +78,7 @@ export const fetchForecast = async (
   latitude: string,
   longitude: string,
   setForecastInfo: React.Dispatch<
-    React.SetStateAction<ForecastDataTypes | null | undefined>
+    React.SetStateAction<ForecastDataTypes | null>
   >,
 ) => {
   const weatherKey: string = import.meta.env.VITE_WEATHER_KEY;

@@ -7,7 +7,7 @@ import { GeoLocation } from "./geoLocation";
 import { IsDayContext, WeatherContext } from "./context/context";
 import { Background } from "./utils/background";
 import { fetchGeo, fetchWeather, fetchForecast } from "./utils/api";
-import { HourlyForecast } from "./forecast";
+import { DaysForecast, HourlyForecast } from "./forecast";
 
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -19,13 +19,11 @@ function App() {
   dayjs.extend(timezone);
   // dayjs.extend(localizedFormat);
 
-  const [weatherInfo, setWeatherInfo] = useState<
-    WeatherTypes | null | undefined
-  >(null);
-  const [geoInfo, setGeoInfo] = useState<GeoDataTypes | null | undefined>(null);
-  const [forecastInfo, setForecastInfo] = useState<
-    ForecastDataTypes | null | undefined
-  >(null);
+  const [weatherInfo, setWeatherInfo] = useState<WeatherTypes | null>(null);
+  const [geoInfo, setGeoInfo] = useState<GeoDataTypes | null>(null);
+  const [forecastInfo, setForecastInfo] = useState<ForecastDataTypes | null>(
+    null,
+  );
 
   const [status, setStatus] = useState<string>("Loading");
   const [errText, setErrText] = useState<string>("");
@@ -172,6 +170,10 @@ function App() {
             ></HourlyForecast>
             <Buttons weatherInfo={isWeatherInfo} action={refresh}></Buttons>
           </div>
+          <DaysForecast
+            forecast={forecastInfo}
+            geoInfo={geoInfo}
+          ></DaysForecast>
         </WeatherContext.Provider>
         <Status
           status={status}
