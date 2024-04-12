@@ -18,32 +18,32 @@ export function HourlyForecast({
   forecast: ForecastDataTypes | null | undefined;
   geoInfo: GeoDataTypes | null | undefined;
 }) {
-  const currentHour = dayjs(geoInfo?.time_zone.current_time)
-    .tz(geoInfo?.time_zone.name)
-    .hour();
+  const handlTime = (time: string) => dayjs(time).tz(geoInfo?.time_zone.name);
   const todayDate = dayjs(geoInfo?.time_zone.current_time);
 
-  const handlTime = (time: string) => dayjs(time).tz(geoInfo?.time_zone.name);
+  const currentHour = todayDate.tz(geoInfo?.time_zone.name).hour();
+
   const parseLocalHour = (hour: string) => handlTime(hour).format("HH:mm");
   const parseDate = (date: string) => handlTime(date).format("YYYY-MM-DD");
   const todayForecast = forecast?.list?.filter(
     (i) => parseDate(i.dt_txt) == todayDate.format("YYYY-MM-DD"),
   );
 
-  const nowIndicator = (dt: number) =>
-    currentHour >= dt - 1 && currentHour <= dt + 1;
+  const nowIndicator = (dt: string) =>
+    currentHour >= handlTime(dt).subtract(1, "hour").hour() &&
+    currentHour <= handlTime(dt).add(1, "hour").hour();
 
   return (
-    <div className="w-full">
+    <div>
       <p className="mb-2 text-lg font-bold text-slate-300">Today</p>
-      <div className="flex flex-grow-0 gap-4 overflow-auto text-center">
+      <div className="flex gap-4 overflow-scroll text-center">
         {todayForecast?.map((i, index) => (
           <div
             key={index}
-            className="relative overflow-hidden rounded-md border border-slate-500 p-2 before:absolute before:left-0 before:top-0 before:-z-[2] before:h-full before:w-full before:bg-slate-500 before:opacity-40  before:content-['']"
+            className="relative min-w-16 flex-grow overflow-hidden rounded-md border border-slate-500 p-2 before:absolute before:left-0 before:top-0 before:-z-[2] before:h-full before:w-full before:bg-slate-500  before:opacity-40 before:content-['']"
           >
             <div className="text-[.9rem] font-medium text-slate-300">
-              {nowIndicator(handlTime(i.dt_txt).hour()) ? (
+              {nowIndicator(i.dt_txt) ? (
                 <>now</>
               ) : (
                 <>{parseLocalHour(i.dt_txt)}</>
