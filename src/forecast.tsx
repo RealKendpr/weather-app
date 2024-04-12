@@ -25,9 +25,24 @@ export function HourlyForecast({
 
   const parseLocalHour = (hour: string) => handlTime(hour).format("HH:mm");
   const parseDate = (date: string) => handlTime(date).format("YYYY-MM-DD");
+
   const todayForecast = forecast?.list?.filter(
     (i) => parseDate(i.dt_txt) == todayDate.format("YYYY-MM-DD"),
   );
+
+  const getForecast = () => {
+    if (todayForecast != null && todayForecast?.length >= 3) {
+      return todayForecast;
+    } else {
+      const tomorrowForecast = forecast?.list.filter(
+        (i) =>
+          parseDate(i.dt_txt) == todayDate.add(1, "day").format("YYYY-MM-DD"),
+      );
+      return tomorrowForecast
+        ? todayForecast?.concat(tomorrowForecast)
+        : todayForecast;
+    }
+  };
 
   const nowIndicator = (dt: string) =>
     currentHour >= handlTime(dt).subtract(1, "hour").hour() &&
@@ -36,8 +51,8 @@ export function HourlyForecast({
   return (
     <>
       <h2 className="mb-2 text-lg font-bold text-slate-300">Today</h2>
-      <div className="flex gap-5 overflow-auto text-center">
-        {todayForecast?.map((i, index) => (
+      <div className="flex gap-5 overflow-auto pb-4 text-center">
+        {getForecast()?.map((i, index) => (
           <div
             key={index}
             className="relative min-w-16 flex-grow overflow-hidden rounded-md border border-slate-500 p-2 before:absolute before:left-0 before:top-0 before:-z-[2] before:h-full before:w-full before:bg-slate-500  before:opacity-40 before:content-['']"
