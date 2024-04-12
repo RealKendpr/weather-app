@@ -86,8 +86,14 @@ function App() {
       <IsDayContext.Provider value={isDay}>
         <WeatherContext.Provider value={weatherInfo}>
           {geoInfo?.time_zone && <Background></Background>}
-          <div className="mx-auto flex h-dvh w-11/12 flex-col justify-around">
-            <div className="grid gap-12">
+          <main className="grid min-h-dvh grid-cols-1 grid-rows-[auto_1fr_auto] gap-y-4 pb-4">
+            <span className="sticky top-0 z-50 flex w-full items-center justify-between bg-slate-600 px-2 py-2">
+              <h1 className="text-lg font-bold text-slate-300">
+                Simple Weather App
+              </h1>
+              <Buttons weatherInfo={isWeatherInfo} action={refresh}></Buttons>
+            </span>
+            <div className="mx-auto grid w-11/12 gap-12">
               {geoInfo?.time_zone && (
                 <GeoLocation
                   time={geoInfo.time_zone.current_time}
@@ -95,12 +101,12 @@ function App() {
                 ></GeoLocation>
               )}
               <div>
-                <div
+                <h3
                   data-isday={isDay ? "true" : "false"}
                   className="text-center font-display text-[5.5rem] font-bold leading-tight text-slate-300 data-isday:text-slate-900"
                 >
                   {weatherInfo?.main.temp}&deg;c
-                </div>
+                </h3>
                 <div className="flex flex-col items-center">
                   <div
                     data-isday={isDay ? "true" : "false"}
@@ -164,12 +170,14 @@ function App() {
                 ></AdditionalInfo>
               </div>
             </div>
-            <HourlyForecast
-              forecast={forecastInfo}
-              geoInfo={geoInfo}
-            ></HourlyForecast>
-          </div>
-          <Buttons weatherInfo={isWeatherInfo} action={refresh}></Buttons>
+            <div className="mx-auto w-11/12">
+              <HourlyForecast
+                forecast={forecastInfo}
+                geoInfo={geoInfo}
+              ></HourlyForecast>
+            </div>
+          </main>
+
           <DaysForecast
             forecast={forecastInfo}
             geoInfo={geoInfo}

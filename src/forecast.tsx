@@ -34,9 +34,9 @@ export function HourlyForecast({
     currentHour <= handlTime(dt).add(1, "hour").hour();
 
   return (
-    <div>
-      <p className="mb-2 text-lg font-bold text-slate-300">Today</p>
-      <div className="flex gap-4 overflow-scroll text-center">
+    <>
+      <h2 className="mb-2 text-lg font-bold text-slate-300">Today</h2>
+      <div className="flex gap-5 overflow-auto text-center">
         {todayForecast?.map((i, index) => (
           <div
             key={index}
@@ -51,6 +51,7 @@ export function HourlyForecast({
             </div>
             <div className="mx-auto w-2/3">
               <img
+                className="pointer-events-none selection:select-none"
                 src={`https://openweathermap.org/img/wn/${i.weather[0].icon}@4x.png`}
                 alt={i.weather[0].description}
               />
@@ -61,7 +62,7 @@ export function HourlyForecast({
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 }
 
@@ -112,25 +113,42 @@ export function DaysForecast({
   });
 
   return (
-    <div className="grid gap-6">
-      <div>Next 5 Days</div>
-      {minMaxForecast.map((i, index) => {
-        return (
-          <div key={index} className="bg-slate-400">
-            <div>
-              <div>{handlTime(i.max.dt_txt).format("dddd")}</div>
-              <div>
-                <img
-                  src={`https://openweathermap.org/img/wn/${i.max.weather[0].icon}@2x.png`}
-                  alt=""
-                />
-                <p>{i.max.weather[0].description}</p>
-              </div>
-              <div>{i.max.main.temp}&deg;</div>
+    <div className="min-h-dvh bg-slate-400 px-3 py-6">
+      <h2 className="mb-2 font-display text-lg font-bold text-slate-300">
+        Next 5 Days
+      </h2>
+      <div>
+        {minMaxForecast.map((i, index) => {
+          return (
+            <div
+              key={index}
+              className="relative grid w-full grid-cols-3 items-center justify-items-center px-2 py-5 after:absolute after:bottom-0 after:h-px after:w-full after:bg-slate-300 after:opacity-40 after:content-['']"
+            >
+              <p className="justify-self-start font-display text-base">
+                {handlTime(i.max.dt_txt).format("dddd")}
+              </p>
+              <figure className="flex w-[90%] items-center justify-start">
+                <div className="w-10">
+                  <img
+                    // className="mb-[-10px]"
+                    className="pointer-events-none selection:select-none"
+                    src={`https://openweathermap.org/img/wn/${i.max.weather[0].icon}@2x.png`}
+                    alt=""
+                  />
+                </div>
+                <figcaption className="text-clip whitespace-nowrap font-display text-xs">
+                  {i.max.weather[0].description
+                    .toLowerCase()
+                    .replace(/\b\w/g, (s) => s.toUpperCase())}
+                </figcaption>
+              </figure>
+              <p className="justify-self-end font-display text-3xl font-bold">
+                {i.max.main.temp}&deg;
+              </p>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
