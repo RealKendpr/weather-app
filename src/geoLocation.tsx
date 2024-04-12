@@ -14,20 +14,20 @@ export function GeoLocation({ time, tz }: { time: string; tz: string }) {
 
   return (
     <div>
-      <div
+      <h2
         data-isday={IsDay ? "true" : "false"}
-        className="data-isday:text-slate-900 font-display text-3xl font-semibold text-slate-300"
+        className="font-display text-3xl font-semibold text-slate-300 data-isday:text-slate-900"
       >
         {weatherInfo?.name}
-      </div>
-      <div
+      </h2>
+      <p
         data-isday={IsDay ? "true" : "false"}
-        className="data-isday:text-slate-900 font-display text-xl font-medium text-slate-300"
+        className="font-display text-xl font-medium text-slate-300 data-isday:text-slate-900"
       >
         <span>{date.format("dddd")}</span>, &nbsp;
         <span>{date.format("MMMM")}</span> &nbsp;
         <span>{date.format("D")}</span>
-      </div>
+      </p>
     </div>
   );
 }

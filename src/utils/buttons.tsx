@@ -7,9 +7,10 @@ export function Buttons({
 }) {
   return (
     <button
-      className="fixed right-5 top-5 grid size-8 place-items-center rounded-full bg-gray-300 p-2 font-bold disabled:opacity-50"
+      className="grid size-8 place-items-center rounded-full bg-gray-300 p-2 font-bold disabled:opacity-50"
       disabled={weatherInfo === false}
       onClick={action}
+      title="Refresh Button"
     >
       <svg
         className="max-w-full"
@@ -17,9 +18,8 @@ export function Buttons({
         width="1em"
         height="1em"
         viewBox="0 0 24 24"
-        aria-labelledby="refresh`"
+        aria-hidden
       >
-        <title id="refresh">Refresh Buttton</title>
         <path
           className="fill-slate-900 data-isday:fill-slate-300"
           fill="currentColor"
