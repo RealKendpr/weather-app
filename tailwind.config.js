@@ -4,12 +4,14 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        display: "Poppins, sans-serif",
+        // display: "Poppins, sans-serif",
+        display: "Inter, sans-serif",
       },
     },
     data: {
       isday: 'isday="true"',
       isnotok: 'isnotok="true"',
+      nowindicator: 'nowindicator="now"',
     },
   },
   plugins: [],

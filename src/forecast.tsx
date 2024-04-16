@@ -30,7 +30,7 @@ export function HourlyForecast({
     (i) => parseDate(i.dt_txt) == todayDate.format("YYYY-MM-DD"),
   );
 
-  const getForecast = () => {
+  const forecastToShow = () => {
     if (todayForecast != null && todayForecast?.length >= 3) {
       return todayForecast;
     } else {
@@ -39,7 +39,7 @@ export function HourlyForecast({
           parseDate(i.dt_txt) == todayDate.add(1, "day").format("YYYY-MM-DD"),
       );
       return tomorrowForecast
-        ? todayForecast?.concat(tomorrowForecast)
+        ? todayForecast?.concat(tomorrowForecast?.slice(0, 3))
         : todayForecast;
     }
   };
@@ -50,30 +50,29 @@ export function HourlyForecast({
 
   return (
     <>
-      <h2 className="mb-2 text-lg font-bold text-slate-300">Today</h2>
-      <div className="flex gap-5 overflow-auto pb-4 text-center">
-        {getForecast()?.map((i, index) => (
+      <h2 className="mb-2 text-xl font-bold text-slate-100">Today</h2>
+      <div className="flex snap-x snap-mandatory gap-5 overflow-auto pb-4 text-center">
+        {forecastToShow()?.map((i, index) => (
           <div
+            data-nowindicator={nowIndicator(i.dt_txt) ? "now" : "notnow"}
             key={index}
-            className="relative min-w-16 flex-grow overflow-hidden rounded-md border border-slate-500 p-2 before:absolute before:left-0 before:top-0 before:-z-[2] before:h-full before:w-full before:bg-slate-500  before:opacity-40 before:content-['']"
+            className="data-nowindicator:bg-[#b6a63e] data-nowindicator:snap-center relative min-w-28 flex-grow snap-start overflow-hidden rounded-md border border-slate-500 bg-gray-400 p-2 font-semibold text-[hsl(0,0%,11%)]"
           >
-            <div className="text-[.9rem] font-medium text-slate-300">
+            <div className="text-[.9rem]">
               {nowIndicator(i.dt_txt) ? (
                 <>now</>
               ) : (
                 <>{parseLocalHour(i.dt_txt)}</>
               )}
             </div>
-            <div className="mx-auto w-2/3">
+            <div className="mx-auto grid min-h-[62px] w-2/3 items-center">
               <img
                 className="pointer-events-none selection:select-none"
                 src={`https://openweathermap.org/img/wn/${i.weather[0].icon}@4x.png`}
                 alt={i.weather[0].description}
               />
             </div>
-            <p className="text-[.9rem] font-medium text-slate-300">
-              {i.main.temp}&deg;c
-            </p>
+            <p className="text-[.9rem]">{i.main.temp}&deg;c</p>
           </div>
         ))}
       </div>
@@ -128,8 +127,8 @@ export function DaysForecast({
   });
 
   return (
-    <div className="min-h-dvh bg-slate-400 px-3 py-6">
-      <h2 className="mb-2 font-display text-lg font-bold text-slate-300">
+    <div className="min-h-dvh bg-[hsl(0,0%,11%)] px-3 py-6">
+      <h2 className="mb-2 font-display text-xl font-bold text-slate-200">
         Next 5 Days
       </h2>
       <div>
@@ -137,13 +136,13 @@ export function DaysForecast({
           return (
             <div
               key={index}
-              className="relative grid w-full grid-cols-3 items-center justify-items-center px-2 py-5 after:absolute after:bottom-0 after:h-px after:w-full after:bg-slate-300 after:opacity-40 after:content-['']"
+              className="relative grid w-full grid-cols-3 items-center justify-items-center px-2 pb-8 pt-4 text-gray-400 after:absolute after:bottom-0 after:h-px after:w-full after:bg-white after:opacity-20 after:content-['']"
             >
-              <p className="justify-self-start font-display text-base">
+              <p className="justify-self-start font-display text-base ">
                 {handlTime(i.max.dt_txt).format("dddd")}
               </p>
               <figure className="flex w-[90%] items-center justify-start">
-                <div className="w-10">
+                <div className="w-10 flex-shrink-0">
                   <img
                     // className="mb-[-10px]"
                     className="pointer-events-none selection:select-none"
@@ -151,7 +150,7 @@ export function DaysForecast({
                     alt=""
                   />
                 </div>
-                <figcaption className="text-clip whitespace-nowrap font-display text-xs">
+                <figcaption className="text-clip whitespace-nowrap font-display text-xs text-[#b6a63e]">
                   {i.max.weather[0].description
                     .toLowerCase()
                     .replace(/\b\w/g, (s) => s.toUpperCase())}
