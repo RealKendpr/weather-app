@@ -16,13 +16,13 @@ export function GeoLocation({ time, tz }: { time: string; tz: string }) {
     <div>
       <h2
         data-isday={IsDay ? "true" : "false"}
-        className="font-display text-3xl font-semibold text-slate-300 data-isday:text-slate-900"
+        className="font-display text-3xl font-semibold text-slate-200 data-isday:text-slate-900"
       >
         {weatherInfo?.name}
       </h2>
       <p
         data-isday={IsDay ? "true" : "false"}
-        className="font-display text-xl font-medium text-slate-300 data-isday:text-slate-900"
+        className="font-display text-xl font-medium text-slate-200 data-isday:text-slate-900"
       >
         <span>{date.format("dddd")}</span>, &nbsp;
         <span>{date.format("MMMM")}</span> &nbsp;

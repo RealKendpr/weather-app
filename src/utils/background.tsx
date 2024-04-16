@@ -8,7 +8,7 @@ export function Background() {
     <div className="fixed z-[-2] h-dvh w-full">
       <div
         data-isday={IsDay ? "true" : "false"}
-        className="fixed h-full w-full bg-slate-800 opacity-30 data-isday:opacity-25"
+        className="fixed h-full w-full bg-slate-800 opacity-30 data-isday:opacity-40"
       ></div>
       <img
         className="pointer-events-none h-full w-full select-none object-cover object-center"

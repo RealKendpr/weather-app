@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
+import { RefObject } from "react";
 import { GeoDataTypes, WeatherTypes, ForecastDataTypes } from "./types/type";
 import { AdditionalInfo } from "./utils/additionaInfo";
 import { Status } from "./fetchStatus";
@@ -30,6 +31,9 @@ function App() {
 
   const [precipitation, setPrecipitation] = useState<number>(0);
   const [windSpeed, setWindSpeed] = useState<number>(0);
+
+  const [mainHeight, setMainHeight] = useState(window.innerHeight);
+  const header: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
 
   // const uuid = crypto.randomUUID();
   const isWeatherInfo = weatherInfo !== undefined || null ? true : false;
@@ -77,23 +81,41 @@ function App() {
     handleWeatherFetch(geoInfo);
   };
 
+  useEffect(() => {
+    const handleMainHeightResize = () => {
+      const headerHeight = header?.current?.clientHeight;
+      setMainHeight(window.innerHeight - (headerHeight || 0));
+    };
+    window.addEventListener("resize", handleMainHeightResize);
+    handleMainHeightResize();
+    return () => {
+      window.removeEventListener("resize", handleMainHeightResize);
+    };
+  }, [mainHeight, header]);
+
   // setTimeout(() => {
   //   handleFetch();
   // }, 60000);
 
   return (
-    <>
-      <IsDayContext.Provider value={isDay}>
-        <WeatherContext.Provider value={weatherInfo}>
-          {geoInfo?.time_zone && <Background></Background>}
-          <main className="grid min-h-dvh grid-cols-1 grid-rows-[auto_1fr_auto] gap-y-4 pb-4">
-            <span className="sticky top-0 z-50 flex w-full items-center justify-between bg-slate-600 px-2 py-2">
-              <h1 className="text-lg font-bold text-slate-300">
-                Simple Weather App
-              </h1>
-              <Buttons weatherInfo={isWeatherInfo} action={refresh}></Buttons>
-            </span>
-            <div className="mx-auto grid w-11/12 gap-12">
+    <IsDayContext.Provider value={isDay}>
+      <WeatherContext.Provider value={weatherInfo}>
+        {geoInfo?.time_zone && <Background></Background>}
+        <div className="grid min-h-dvh md:grid-cols-[1s.3fr_.7fr] md:grid-rows-[auto_1fr]">
+          <span
+            ref={header}
+            className="flex w-full items-center justify-between bg-slate-600 px-2 py-2 md:col-span-2"
+          >
+            <h1 className="text-lg font-bold text-slate-200">
+              Simple Weather App
+            </h1>
+            <Buttons weatherInfo={isWeatherInfo} action={refresh}></Buttons>
+          </span>
+          <main
+            style={{ minHeight: `${mainHeight}px` }}
+            className="grid grid-cols-1 grid-rows-[1fr_auto] gap-y-4 py-5"
+          >
+            <div className="mx-auto grid w-11/12">
               {geoInfo?.time_zone && (
                 <GeoLocation
                   time={geoInfo.time_zone.current_time}
@@ -103,14 +125,14 @@ function App() {
               <div>
                 <h3
                   data-isday={isDay ? "true" : "false"}
-                  className="text-center font-display text-[5.5rem] font-bold leading-tight text-slate-300 data-isday:text-slate-900"
+                  className="text-center font-display text-[5.5rem] font-bold leading-tight text-slate-200 data-isday:text-slate-900"
                 >
                   {weatherInfo?.main.temp}&deg;c
                 </h3>
                 <div className="flex flex-col items-center">
                   <div
                     data-isday={isDay ? "true" : "false"}
-                    className="flex items-center gap-1 font-display text-xl font-semibold text-slate-300 data-isday:text-slate-900"
+                    className="flex items-center gap-1 font-display text-xl font-semibold text-slate-200 data-isday:text-slate-900"
                   >
                     <span>
                       <svg
@@ -149,7 +171,7 @@ function App() {
                   </div>
                   <div
                     data-isday={isDay ? "true" : "false"}
-                    className="font-display text-xl font-semibold text-slate-300 data-isday:text-slate-900"
+                    className="font-display text-xl font-semibold text-slate-200 data-isday:text-slate-900"
                   >
                     {weatherInfo?.weather[0].main}
                   </div>
@@ -177,24 +199,23 @@ function App() {
               ></HourlyForecast>
             </div>
           </main>
-
           <DaysForecast
             forecast={forecastInfo}
             geoInfo={geoInfo}
           ></DaysForecast>
-        </WeatherContext.Provider>
-        <Status
-          status={status}
-          text={
-            status === "Loading"
-              ? "Loading..."
-              : status === "Error"
-                ? `${errText}`
-                : ""
-          }
-        ></Status>
-      </IsDayContext.Provider>
-    </>
+        </div>
+      </WeatherContext.Provider>
+      <Status
+        status={status}
+        text={
+          status === "Loading"
+            ? "Loading..."
+            : status === "Error"
+              ? `${errText}`
+              : ""
+        }
+      ></Status>
+    </IsDayContext.Provider>
   );
 }
 
