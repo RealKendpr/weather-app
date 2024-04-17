@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { BackgroundCondition } from "./backgroundCondition";
+import { BackgroundCondition } from "../utils/backgroundCondition";
 import { IsDayContext } from "../context/context";
 
 export function Background() {

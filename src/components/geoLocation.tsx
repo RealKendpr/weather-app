@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { IsDayContext, WeatherContext } from "./context/context";
+import { IsDayContext, WeatherContext } from "../context/context";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";

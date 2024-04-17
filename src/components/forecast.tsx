@@ -2,7 +2,7 @@ import {
   ForecastDataTypes,
   ForecastListTypes,
   GeoDataTypes,
-} from "./types/type";
+} from "../types/type";
 
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -51,7 +51,7 @@ export function HourlyForecast({
   return (
     <>
       <h2 className="mb-2 text-xl font-bold text-slate-100">Today</h2>
-      <div className="flex snap-x snap-mandatory gap-5 overflow-auto pb-4 text-center">
+      <div className="flex snap-x gap-5 overflow-auto pb-4 text-center">
         {forecastToShow()?.map((i, index) => (
           <div
             data-nowindicator={nowIndicator(i.dt_txt) ? "now" : "notnow"}
@@ -84,19 +84,16 @@ export function DaysForecast({
   forecast,
   geoInfo,
 }: {
-  forecast: ForecastDataTypes | null;
-  geoInfo: GeoDataTypes | null;
+  forecast: ForecastDataTypes | null | undefined;
+  geoInfo: GeoDataTypes | null | undefined;
 }) {
-  if (forecast == null) {
-    return;
-  }
   const handlTime = (time: string) => dayjs(time).tz(geoInfo?.time_zone.name);
   const parseLocalDate = (date: string) => handlTime(date).format("YYYY-MM-DD");
 
   const todayDate = dayjs(geoInfo?.time_zone.current_time);
 
   const groupedDaysForecast: { [key: string]: ForecastListTypes[] } =
-    forecast.list.reduce(
+    forecast?.list?.reduce(
       (
         accumulator: { [key: string]: ForecastListTypes[] },
         i: ForecastListTypes,
@@ -112,19 +109,21 @@ export function DaysForecast({
         return accumulator;
       },
       {},
-    );
+    ) as { [key: string]: ForecastListTypes[] };
 
   const minMaxForecast: {
     max: ForecastListTypes;
-  }[] = Object.values(groupedDaysForecast).map((i: ForecastListTypes[]) => {
-    const maxTemp: number = Math.max(...i.map((x) => x.main.temp));
+  }[] = groupedDaysForecast
+    ? Object.values(groupedDaysForecast).map((i: ForecastListTypes[]) => {
+        const maxTemp: number = Math.max(...i.map((x) => x.main.temp));
 
-    const maxTempObj: ForecastListTypes = i.filter(
-      (x) => x.main.temp === maxTemp,
-    )[0];
+        const maxTempObj: ForecastListTypes = i.filter(
+          (x) => x.main.temp === maxTemp,
+        )[0];
 
-    return { max: maxTempObj };
-  });
+        return { max: maxTempObj };
+      })
+    : [];
 
   return (
     <>
