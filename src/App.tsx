@@ -101,8 +101,13 @@ function App() {
     <IsDayContext.Provider value={isDay}>
       <WeatherContext.Provider value={weatherInfo}>
         {geoInfo?.time_zone && <Background></Background>}
-        <div className="grid min-h-dvh md:grid-cols-[1s.3fr_.7fr] md:grid-rows-[auto_1fr]">
-          <span
+        <div
+          style={{
+            gridTemplateRows: `auto minmax(${mainHeight}px, auto) minmax(100dvh, auto)`,
+          }}
+          className="grid min-h-dvh grid-cols-[minmax(375px,_1fr)] md:grid-cols-[1fr_minmax(400px,_auto)] md:!grid-rows-[auto_1fr]"
+        >
+          <header
             ref={header}
             className="flex w-full items-center justify-between bg-slate-600 px-2 py-2 md:col-span-2"
           >
@@ -110,12 +115,9 @@ function App() {
               Simple Weather App
             </h1>
             <Buttons weatherInfo={isWeatherInfo} action={refresh}></Buttons>
-          </span>
-          <main
-            style={{ minHeight: `${mainHeight}px` }}
-            className="grid grid-cols-1 grid-rows-[1fr_auto] gap-y-4 py-5"
-          >
-            <div className="mx-auto grid w-11/12">
+          </header>
+          <main className="grid grid-cols-[minmax(375px,_1fr)] grid-rows-[1fr_auto] gap-y-4 py-5 md:px-10">
+            <div className="mx-auto grid w-11/12 lg:w-3/5">
               {geoInfo?.time_zone && (
                 <GeoLocation
                   time={geoInfo.time_zone.current_time}
@@ -177,7 +179,7 @@ function App() {
                   </div>
                 </div>
               </div>
-              <div className="flex justify-around gap-4">
+              <div className="flex flex-wrap justify-around gap-x-4">
                 <AdditionalInfo
                   name="Wind"
                   value={windSpeed}
@@ -192,17 +194,19 @@ function App() {
                 ></AdditionalInfo>
               </div>
             </div>
-            <div className="mx-auto w-11/12">
+            <div className="mx-auto min-h-32 w-11/12 lg:mx-0 lg:w-full">
               <HourlyForecast
                 forecast={forecastInfo}
                 geoInfo={geoInfo}
               ></HourlyForecast>
             </div>
           </main>
-          <DaysForecast
-            forecast={forecastInfo}
-            geoInfo={geoInfo}
-          ></DaysForecast>
+          <aside className="bg-[hsl(0,0%,11%)] px-3 py-6">
+            <DaysForecast
+              forecast={forecastInfo}
+              geoInfo={geoInfo}
+            ></DaysForecast>
+          </aside>
         </div>
       </WeatherContext.Provider>
       <Status

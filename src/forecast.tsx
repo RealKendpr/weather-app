@@ -56,7 +56,7 @@ export function HourlyForecast({
           <div
             data-nowindicator={nowIndicator(i.dt_txt) ? "now" : "notnow"}
             key={index}
-            className="data-nowindicator:bg-[#b6a63e] data-nowindicator:snap-center relative min-w-28 flex-grow snap-start overflow-hidden rounded-md border border-slate-500 bg-gray-400 p-2 font-semibold text-[hsl(0,0%,11%)]"
+            className="relative min-w-28 flex-grow snap-start overflow-hidden rounded-md border border-slate-500 bg-gray-400 p-2 font-semibold text-[hsl(0,0%,11%)] data-nowindicator:snap-center data-nowindicator:bg-[#b6a63e]"
           >
             <div className="text-[.9rem]">
               {nowIndicator(i.dt_txt) ? (
@@ -127,7 +127,7 @@ export function DaysForecast({
   });
 
   return (
-    <div className="min-h-dvh bg-[hsl(0,0%,11%)] px-3 py-6">
+    <>
       <h2 className="mb-2 font-display text-xl font-bold text-slate-200">
         Next 5 Days
       </h2>
@@ -141,7 +141,7 @@ export function DaysForecast({
               <p className="justify-self-start font-display text-base ">
                 {handlTime(i.max.dt_txt).format("dddd")}
               </p>
-              <figure className="flex w-[90%] items-center justify-start">
+              <figure className="flex w-[90%] items-center place-self-start">
                 <div className="w-10 flex-shrink-0">
                   <img
                     // className="mb-[-10px]"
@@ -150,7 +150,7 @@ export function DaysForecast({
                     alt=""
                   />
                 </div>
-                <figcaption className="text-clip whitespace-nowrap font-display text-xs text-[#b6a63e]">
+                <figcaption className="text-clip whitespace-nowrap font-display text-[clamp(.75rem,_50%,_1rem)] text-[#b6a63e]">
                   {i.max.weather[0].description
                     .toLowerCase()
                     .replace(/\b\w/g, (s) => s.toUpperCase())}
@@ -163,6 +163,6 @@ export function DaysForecast({
           );
         })}
       </div>
-    </div>
+    </>
   );
 }
