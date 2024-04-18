@@ -1,7 +1,16 @@
 import { useEffect, useRef } from "react";
 import { RefObject } from "react";
+import { Buttons } from "./buttons";
 
-export function Status({ error, text }: { error: boolean; text: string }) {
+export function Status({
+  error,
+  text,
+  refresh,
+}: {
+  error: boolean;
+  text: string;
+  refresh: any;
+}) {
   const errorModal: RefObject<HTMLDialogElement> =
     useRef<HTMLDialogElement>(null);
 
@@ -44,7 +53,15 @@ export function Status({ error, text }: { error: boolean; text: string }) {
         </div>
         <h1 className="font-bold">An Error Occured</h1>
       </div>
-      <p>{text}</p>
+      <div className="mb-5">
+        <p>{text}</p>
+        <p className="text-sm">Try refreshing the page:</p>
+      </div>
+      <Buttons
+        action={refresh}
+        type="error-refresh"
+        isWeatherInfo={undefined}
+      />
     </dialog>
   );
 }

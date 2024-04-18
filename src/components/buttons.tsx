@@ -1,19 +1,29 @@
 export function Buttons({
-  weatherInfo,
+  isWeatherInfo,
   action,
+  type,
 }: {
-  weatherInfo: boolean;
+  isWeatherInfo: boolean | undefined;
   action: any;
+  type: string;
 }) {
+  console.log(isWeatherInfo);
+
   return (
     <button
-      className="grid size-8 place-items-center rounded-full bg-gray-300 p-2 font-bold disabled:opacity-50"
-      disabled={weatherInfo === false}
+      className="grid size-8 place-items-center rounded-full bg-gray-300 p-2 font-bold disabled:cursor-not-allowed"
+      disabled={
+        type == "normal-refresh"
+          ? isWeatherInfo
+            ? false
+            : true
+          : type == "error-refresh" && false
+      }
       onClick={action}
       title="Refresh Button"
     >
       <svg
-        className="max-w-full"
+        className="h-full w-full"
         xmlns="http://www.w3.org/2000/svg"
         width="1em"
         height="1em"

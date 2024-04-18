@@ -37,7 +37,9 @@ function App() {
   const [mainHeight, setMainHeight] = useState(window.innerHeight);
 
   // const uuid = crypto.randomUUID();
-  const isWeatherInfo = weatherInfo !== undefined || null ? true : false;
+  const isWeatherInfo =
+    weatherInfo !== null && weatherInfo !== undefined ? true : false;
+
   const currentHour = dayjs(geoInfo?.time_zone.current_time)
     .tz(geoInfo?.time_zone.name)
     .hour();
@@ -166,8 +168,9 @@ function App() {
             </>
           ) : (
             <Status
+              refresh={refresh}
               error={status == "Error"}
-              text={status === "Error" ? `${errText}` : ""}
+              text={`${errText}`}
             />
           )}
         </div>
