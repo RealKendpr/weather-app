@@ -10,7 +10,7 @@ export default {
     },
     data: {
       isday: 'isday="true"',
-      isnotok: 'isnotok="true"',
+      error: 'error="true"',
       nowindicator: 'nowindicator="now"',
       forecastloading: 'forecastloading="true"',
     },
