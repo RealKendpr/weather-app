@@ -69,10 +69,10 @@ export function HourlyForecast({
       <h2 className="mb-2 text-xl font-bold text-slate-100">Today</h2>
       <div
         data-forecastloading={forecastLoading ? "true" : "false"}
-        className="data-forecastloading:justify-center flex snap-x snap-mandatory gap-5 overflow-auto pb-4 text-center"
+        className="data-forecastloading:overflow-x-hidden flex snap-x snap-mandatory gap-5 overflow-auto pb-4 text-center"
       >
         {forecastLoading
-          ? Array.from({ length: 4 }, (_, i) => (
+          ? Array.from({ length: 8 }, (_, i) => (
               <HourlyForecastSkeleton key={i} />
             ))
           : forecastToShow()?.map((i, index) => (

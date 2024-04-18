@@ -15,12 +15,10 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import { GeoInfoSkeleton } from "./loading/geoInfoSkeleton";
 import { WeatherDisplaySkeleton } from "./loading/weatherDisplaySkeleton";
-// import localizedFormat from "dayjs/plugin/localizedFormat";
 
 function App() {
   dayjs.extend(utc);
   dayjs.extend(timezone);
-  // dayjs.extend(localizedFormat);
 
   const [geoInfo, setGeoInfo] = useState<GeoDataTypes | null>(null);
   const [weatherInfo, setWeatherInfo] = useState<WeatherTypes | null>(null);
@@ -36,7 +34,6 @@ function App() {
 
   const [mainHeight, setMainHeight] = useState(window.innerHeight);
 
-  // const uuid = crypto.randomUUID();
   const isWeatherInfo =
     weatherInfo !== null && weatherInfo !== undefined ? true : false;
 
@@ -86,9 +83,7 @@ function App() {
     handleWeatherFetch(geoInfo);
   };
 
-  // setTimeout(() => {
-  //   handleFetch();
-  // }, 60000);
+  const loadingSkeleton = status == "Loading" || status == "Error";
 
   return (
     <IsDayContext.Provider value={isDay}>
@@ -111,7 +106,7 @@ function App() {
             <>
               <main className="grid grid-cols-[minmax(375px,_1fr)] grid-rows-[1fr_auto] gap-y-4 py-5 md:px-10">
                 <div className="mx-auto grid w-11/12 lg:w-3/5">
-                  {status == "Loading" || status == "Error" ? (
+                  {loadingSkeleton ? (
                     <>
                       <GeoInfoSkeleton></GeoInfoSkeleton>
                       <WeatherDisplaySkeleton />
@@ -131,18 +126,14 @@ function App() {
                       value={windSpeed}
                       unit="Kilometer per Hour"
                       shortUnit="km/h"
-                      loading={
-                        status == "Loading" || status == "Error" ? true : false
-                      }
+                      loading={loadingSkeleton}
                     />
                     <AdditionalInfo
                       name="Precipitation"
                       value={precipitation}
                       unit="Milimeter"
                       shortUnit="mm"
-                      loading={
-                        status == "Loading" || status == "Error" ? true : false
-                      }
+                      loading={loadingSkeleton}
                     />
                   </div>
                 </div>
@@ -150,9 +141,7 @@ function App() {
                   <HourlyForecast
                     forecast={forecastInfo}
                     geoInfo={geoInfo}
-                    loading={
-                      status == "Loading" || status == "Error" ? true : false
-                    }
+                    loading={loadingSkeleton}
                   />
                 </div>
               </main>
@@ -160,9 +149,7 @@ function App() {
                 <DaysForecast
                   forecast={forecastInfo}
                   geoInfo={geoInfo}
-                  loading={
-                    status == "Loading" || status == "Error" ? true : false
-                  }
+                  loading={loadingSkeleton}
                 />
               </aside>
             </>

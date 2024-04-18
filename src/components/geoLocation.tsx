@@ -4,7 +4,13 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 
-export function GeoLocation({ time, tz }: { time: string; tz: string }) {
+export function GeoLocation({
+  time,
+  tz,
+}: {
+  time: string | undefined;
+  tz: string | undefined;
+}) {
   dayjs.extend(utc);
   dayjs.extend(timezone);
 
@@ -24,9 +30,9 @@ export function GeoLocation({ time, tz }: { time: string; tz: string }) {
         data-isday={IsDay ? "true" : "false"}
         className="font-display text-xl font-medium text-slate-200 data-isday:text-slate-900"
       >
-        <span>{date.format("dddd")}</span>, &nbsp;
-        <span>{date.format("MMMM")}</span> &nbsp;
-        <span>{date.format("D")}</span>
+        <span>{date?.format("dddd")}</span>, &nbsp;
+        <span>{date?.format("MMMM")}</span> &nbsp;
+        <span>{date?.format("D")}</span>
       </p>
     </div>
   );

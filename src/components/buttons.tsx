@@ -7,8 +7,6 @@ export function Buttons({
   action: any;
   type: string;
 }) {
-  console.log(isWeatherInfo);
-
   return (
     <button
       className="grid size-8 place-items-center rounded-full bg-gray-300 p-2 font-bold disabled:cursor-not-allowed"
