@@ -139,7 +139,11 @@ function App() {
               </div>
             </div>
             <div className="mx-auto min-h-32 w-11/12 lg:mx-0 lg:w-full">
-              <HourlyForecast forecast={forecastInfo} geoInfo={geoInfo} />
+              <HourlyForecast
+                forecast={forecastInfo}
+                geoInfo={geoInfo}
+                loading={status == "Loading" ? true : false}
+              />
             </div>
           </main>
           <aside className="bg-[hsl(0,0%,11%)] px-3 py-6">

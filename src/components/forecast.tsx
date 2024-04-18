@@ -7,6 +7,7 @@ import {
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import { HourlyForecastSkeleton } from "../loading/hourlyForecastSkeleton";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -14,9 +15,11 @@ dayjs.extend(timezone);
 export function HourlyForecast({
   forecast,
   geoInfo,
+  loading,
 }: {
   forecast: ForecastDataTypes | null | undefined;
   geoInfo: GeoDataTypes | null | undefined;
+  loading: boolean;
 }) {
   const handlTime = (time: string) => dayjs(time).tz(geoInfo?.time_zone.name);
   const todayDate = dayjs(geoInfo?.time_zone.current_time);
@@ -44,6 +47,8 @@ export function HourlyForecast({
     }
   };
 
+  const forecastLoading = loading || forecastToShow() == null || undefined;
+
   const nowIndicator = (dt: string) => {
     if (handlTime(dt).hour() != 0) {
       return (
@@ -61,30 +66,37 @@ export function HourlyForecast({
   return (
     <>
       <h2 className="mb-2 text-xl font-bold text-slate-100">Today</h2>
-      <div className="flex snap-x gap-5 overflow-auto pb-4 text-center">
-        {forecastToShow()?.map((i, index) => (
-          <div
-            data-nowindicator={nowIndicator(i.dt_txt) ? "now" : "notnow"}
-            key={index}
-            className="relative min-w-28 flex-grow snap-start overflow-hidden rounded-md border border-slate-500 bg-gray-400 p-2 font-semibold text-[hsl(0,0%,11%)] data-nowindicator:snap-center data-nowindicator:bg-[#b6a63e]"
-          >
-            <div className="text-[.9rem]">
-              {nowIndicator(i.dt_txt) ? (
-                <>now</>
-              ) : (
-                <>{parseLocalHour(i.dt_txt)}</>
-              )}
-            </div>
-            <div className="mx-auto grid min-h-[62px] w-2/3 items-center">
-              <img
-                className="pointer-events-none selection:select-none"
-                src={`https://openweathermap.org/img/wn/${i.weather[0].icon}@4x.png`}
-                alt={i.weather[0].description}
-              />
-            </div>
-            <p className="text-[.9rem]">{i.main.temp}&deg;c</p>
-          </div>
-        ))}
+      <div
+        data-forecastloading={forecastLoading ? "true" : "false"}
+        className="data-forecastloading:justify-center flex snap-x snap-mandatory gap-5 overflow-auto pb-4 text-center"
+      >
+        {forecastLoading
+          ? Array.from({ length: 4 }, (_, i) => (
+              <HourlyForecastSkeleton key={i} />
+            ))
+          : forecastToShow()?.map((i, index) => (
+              <div
+                data-nowindicator={nowIndicator(i.dt_txt) ? "now" : "notnow"}
+                key={index}
+                className="relative max-h-32 min-w-28 max-w-28 flex-grow-0 snap-start overflow-hidden rounded-md border border-slate-500 bg-gray-400 p-2 font-semibold text-[hsl(0,0%,11%)] data-nowindicator:snap-center data-nowindicator:bg-[#b6a63e]"
+              >
+                <div className="text-[.9rem]">
+                  {nowIndicator(i.dt_txt) ? (
+                    <>now</>
+                  ) : (
+                    <>{parseLocalHour(i.dt_txt)}</>
+                  )}
+                </div>
+                <div className="mx-auto grid min-h-[62px] w-2/3 items-center">
+                  <img
+                    className="pointer-events-none selection:select-none"
+                    src={`https://openweathermap.org/img/wn/${i.weather[0].icon}@4x.png`}
+                    alt={i.weather[0].description}
+                  />
+                </div>
+                <p className="text-[.9rem]">{i.main.temp}&deg;c</p>
+              </div>
+            ))}
       </div>
     </>
   );
@@ -141,7 +153,7 @@ export function DaysForecast({
         Next 5 Days
       </h2>
       <div>
-        {minMaxForecast.map((i, index) => {
+        {minMaxForecast?.map((i, index) => {
           return (
             <div
               key={index}

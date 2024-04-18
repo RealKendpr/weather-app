@@ -16,7 +16,6 @@ export function AdditionalInfo({
   loading: boolean;
 }) {
   const IsDay = useContext(IsDayContext);
-  console.log(loading);
 
   return (
     <>

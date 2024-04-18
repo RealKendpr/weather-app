@@ -12,6 +12,7 @@ export default {
       isday: 'isday="true"',
       isnotok: 'isnotok="true"',
       nowindicator: 'nowindicator="now"',
+      forecastloading: 'forecastloading="true"',
     },
   },
   plugins: [],
