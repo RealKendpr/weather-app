@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { GeoDataTypes, WeatherTypes, ForecastDataTypes } from "./types/type";
 import { AdditionalInfo } from "./components/additionaInfo";
-import { Status } from "./components/fetchStatus";
+// import { Status } from "./components/fetchStatus";
 import { GeoLocation } from "./components/geoLocation";
 import { IsDayContext, WeatherContext } from "./context/context";
 import { Background } from "./components/background";
@@ -13,6 +13,8 @@ import { Header } from "./components/header";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import { GeoInfoSkeleton } from "./loading/geoInfoSkeleton";
+import { WeatherDisplaySkeleton } from "./loading/weatherDisplaySkeleton";
 // import localizedFormat from "dayjs/plugin/localizedFormat";
 
 function App() {
@@ -101,28 +103,38 @@ function App() {
             refresh={refresh}
             mainHeight={mainHeight}
             setMainHeight={setMainHeight}
+            // status={status}
           />
           <main className="grid grid-cols-[minmax(375px,_1fr)] grid-rows-[1fr_auto] gap-y-4 py-5 md:px-10">
             <div className="mx-auto grid w-11/12 lg:w-3/5">
-              {geoInfo?.time_zone && (
-                <GeoLocation
-                  time={geoInfo.time_zone.current_time}
-                  tz={geoInfo.time_zone.name}
-                />
+              {status == "Loading" ? (
+                <>
+                  <GeoInfoSkeleton></GeoInfoSkeleton>
+                  <WeatherDisplaySkeleton />
+                </>
+              ) : (
+                <>
+                  <GeoLocation
+                    time={geoInfo?.time_zone?.current_time}
+                    tz={geoInfo?.time_zone?.name}
+                  />
+                  <WeatherDisplay isDay={isDay} weatherInfo={weatherInfo} />
+                </>
               )}
-              <WeatherDisplay isDay={isDay} weatherInfo={weatherInfo} />
               <div className="flex flex-wrap justify-around gap-x-4">
                 <AdditionalInfo
                   name="Wind"
                   value={windSpeed}
                   unit="Kilometer per Hour"
                   shortUnit="km/h"
+                  loading={status == "Loading" ? true : false}
                 />
                 <AdditionalInfo
                   name="Precipitation"
                   value={precipitation}
                   unit="Milimeter"
                   shortUnit="mm"
+                  loading={status == "Loading" ? true : false}
                 />
               </div>
             </div>
@@ -135,17 +147,18 @@ function App() {
           </aside>
         </div>
       </WeatherContext.Provider>
-      <Status
+      {/* <Status
         status={status}
         text={
-          status === "Loading"
+          status == "Loading"
             ? "Loading..."
             : status === "Error"
               ? `${errText}`
               : ""
         }
-      />
+      /> */}
     </IsDayContext.Provider>
+    // <SkeletonMainLoading mainHeight={mainHeight}></SkeletonMainLoading>
   );
 }
 
