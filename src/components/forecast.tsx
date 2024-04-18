@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import { HourlyForecastSkeleton } from "../loading/hourlyForecastSkeleton";
+import { DaysForecastSkeleton } from "../loading/daysForecastSkeleton";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -105,9 +106,11 @@ export function HourlyForecast({
 export function DaysForecast({
   forecast,
   geoInfo,
+  loading,
 }: {
   forecast: ForecastDataTypes | null | undefined;
   geoInfo: GeoDataTypes | null | undefined;
+  loading: boolean;
 }) {
   const handlTime = (time: string) => dayjs(time).tz(geoInfo?.time_zone.name);
   const parseLocalDate = (date: string) => handlTime(date).format("YYYY-MM-DD");
@@ -147,42 +150,48 @@ export function DaysForecast({
       })
     : [];
 
+  const daysForecastLoading =
+    loading || minMaxForecast.length < 1 || minMaxForecast == undefined;
+
   return (
     <>
       <h2 className="mb-2 font-display text-xl font-bold text-slate-200">
         Next 5 Days
       </h2>
       <div>
-        {minMaxForecast?.map((i, index) => {
-          return (
-            <div
-              key={index}
-              className="relative grid w-full grid-cols-3 items-center justify-items-center px-2 pb-8 pt-4 text-gray-400 after:absolute after:bottom-0 after:h-px after:w-full after:bg-white after:opacity-20 after:content-['']"
-            >
-              <p className="justify-self-start font-display text-base ">
-                {handlTime(i.max.dt_txt).format("dddd")}
-              </p>
-              <figure className="flex w-[90%] items-center place-self-start">
-                <div className="w-10 flex-shrink-0">
-                  <img
-                    // className="mb-[-10px]"
-                    className="pointer-events-none selection:select-none"
-                    src={`https://openweathermap.org/img/wn/${i.max.weather[0].icon}@2x.png`}
-                    alt=""
-                  />
+        {daysForecastLoading
+          ? Array.from({ length: 5 }, (_, i) => (
+              <DaysForecastSkeleton key={i} />
+            ))
+          : minMaxForecast.map((i, index) => {
+              return (
+                <div
+                  key={index}
+                  className="relative grid w-full grid-cols-3 items-center justify-items-center px-2 pb-8 pt-4 text-gray-400 after:absolute after:bottom-0 after:h-px after:w-full after:bg-white after:opacity-20 after:content-['']"
+                >
+                  <p className="justify-self-start font-display text-base ">
+                    {handlTime(i.max.dt_txt).format("dddd")}
+                  </p>
+                  <figure className="flex w-[90%] items-center justify-self-start">
+                    <div className="w-10 flex-shrink-0">
+                      <img
+                        className="pointer-events-none selection:select-none"
+                        src={`https://openweathermap.org/img/wn/${i.max.weather[0].icon}@2x.png`}
+                        alt=""
+                      />
+                    </div>
+                    <figcaption className="text-clip whitespace-nowrap font-display text-[clamp(.75rem,_50%,_1rem)] text-[#b6a63e]">
+                      {i.max.weather[0].description
+                        .toLowerCase()
+                        .replace(/\b\w/g, (s) => s.toUpperCase())}
+                    </figcaption>
+                  </figure>
+                  <p className="justify-self-end font-display text-3xl font-bold">
+                    {i.max.main.temp}&deg;
+                  </p>
                 </div>
-                <figcaption className="text-clip whitespace-nowrap font-display text-[clamp(.75rem,_50%,_1rem)] text-[#b6a63e]">
-                  {i.max.weather[0].description
-                    .toLowerCase()
-                    .replace(/\b\w/g, (s) => s.toUpperCase())}
-                </figcaption>
-              </figure>
-              <p className="justify-self-end font-display text-3xl font-bold">
-                {i.max.main.temp}&deg;
-              </p>
-            </div>
-          );
-        })}
+              );
+            })}
       </div>
     </>
   );

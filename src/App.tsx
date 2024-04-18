@@ -147,7 +147,11 @@ function App() {
             </div>
           </main>
           <aside className="bg-[hsl(0,0%,11%)] px-3 py-6">
-            <DaysForecast forecast={forecastInfo} geoInfo={geoInfo} />
+            <DaysForecast
+              forecast={forecastInfo}
+              geoInfo={geoInfo}
+              loading={status == "Loading" ? true : false}
+            />
           </aside>
         </div>
       </WeatherContext.Provider>
