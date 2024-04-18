@@ -9,9 +9,9 @@ export const BackgroundCondition = (isDay: boolean | undefined) => {
     case true:
       switch (weatherStatus) {
         case "Clouds":
-          return "clouds-day.jpg";
+          return "clouds-day-min.jpg";
         case "Clear":
-          return "clear-day.jpg";
+          return "clear-day-min.jpg";
         case "Atmosphere":
         case "Mist":
         case "Smoke":
@@ -22,23 +22,23 @@ export const BackgroundCondition = (isDay: boolean | undefined) => {
         case "Ash":
         case "Squail":
         case "Tornado":
-          return "atmosphere.jpg";
+          return "atmosphere-min.jpg";
         case "Snow":
-          return "snow-day.jpg";
+          return "snow-day-min.jpg";
         case "Rain":
-          return "rain-day.jpg";
+          return "rain-day-min.jpg";
         case "Drizzle":
-          return "drizzle.jpg";
+          return "drizzle-min.jpg";
         case "Thunderstorm":
-          return "thunderstorm.jpg";
+          return "thunderstorm-min.jpg";
       }
       break;
     case false:
       switch (weatherStatus) {
         case "Clouds":
-          return "clouds-night.jpg";
+          return "clouds-night-min.jpg";
         case "Clear":
-          return "clear-night.jpg";
+          return "clear-night-min.jpg";
         case "Atmosphere":
         case "Mist":
         case "Smoke":
@@ -49,15 +49,15 @@ export const BackgroundCondition = (isDay: boolean | undefined) => {
         case "Ash":
         case "Squail":
         case "Tornado":
-          return "atmosphere.jpg";
+          return "atmosphere-min.jpg";
         case "Snow":
-          return "snow-night.jpg";
+          return "snow-night-min.jpg";
         case "Rain":
-          return "rain-night.jpg";
+          return "rain-night-min.jpg";
         case "Drizzle":
-          return "drizzle.jpg";
+          return "drizzle-min.jpg";
         case "Thunderstorm":
-          return "thunderstorm.jpg";
+          return "thunderstorm-min.jpg";
       }
   }
 };
