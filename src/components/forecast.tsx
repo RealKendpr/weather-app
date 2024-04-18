@@ -44,9 +44,19 @@ export function HourlyForecast({
     }
   };
 
-  const nowIndicator = (dt: string) =>
-    currentHour >= handlTime(dt).subtract(1, "hour").hour() &&
-    currentHour <= handlTime(dt).add(1, "hour").hour();
+  const nowIndicator = (dt: string) => {
+    if (handlTime(dt).hour() != 0) {
+      return (
+        currentHour >= handlTime(dt).subtract(1, "hour").hour() &&
+        currentHour <= handlTime(dt).add(1, "hour").hour()
+      );
+    } else {
+      return (
+        currentHour <= handlTime(dt).add(1, "hour").hour() ||
+        currentHour == handlTime(dt).hour(23).hour()
+      );
+    }
+  };
 
   return (
     <>
