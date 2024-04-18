@@ -9,12 +9,11 @@ import { fetchGeo, fetchWeather, fetchForecast } from "./utils/api";
 import { DaysForecast, HourlyForecast } from "./components/forecast";
 import { WeatherDisplay } from "./components/weatherDisplay";
 import { Header } from "./components/header";
+import { GeoInfoSkeleton, WeatherDispSkeleton } from "./loading";
 
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-import { GeoInfoSkeleton } from "./loading/geoInfoSkeleton";
-import { WeatherDisplaySkeleton } from "./loading/weatherDisplaySkeleton";
 
 function App() {
   dayjs.extend(utc);
@@ -108,8 +107,8 @@ function App() {
                 <div className="mx-auto grid w-11/12 lg:w-3/5">
                   {loadingSkeleton ? (
                     <>
-                      <GeoInfoSkeleton></GeoInfoSkeleton>
-                      <WeatherDisplaySkeleton />
+                      <GeoInfoSkeleton />
+                      <WeatherDispSkeleton />
                     </>
                   ) : (
                     <>

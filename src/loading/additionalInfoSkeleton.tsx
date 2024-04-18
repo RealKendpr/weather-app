@@ -1,4 +1,4 @@
-export function AdditionalInfoSkeleton() {
+export default function AdditionalInfoSkeleton() {
   return (
     <div className="flex animate-pulse gap-x-3">
       <div className="h-5 w-14 bg-slate-300"></div>

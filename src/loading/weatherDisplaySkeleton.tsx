@@ -1,4 +1,4 @@
-export function WeatherDisplaySkeleton() {
+export default function WeatherDisplaySkeleton() {
   return (
     <div className="flex animate-pulse flex-col items-center gap-y-8">
       <div className="h-16 w-72 bg-slate-300"></div>

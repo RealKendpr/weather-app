@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { IsDayContext } from "../context/context";
-import { AdditionalInfoSkeleton } from "../loading/additionalInfoSkeleton";
+import { AdditionalInfoSkeleton } from "../loading";
 
 export function AdditionalInfo({
   name,

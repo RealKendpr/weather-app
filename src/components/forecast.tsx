@@ -7,8 +7,7 @@ import {
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-import { HourlyForecastSkeleton } from "../loading/hourlyForecastSkeleton";
-import { DaysForecastSkeleton } from "../loading/daysForecastSkeleton";
+import { DaysForecastSkeleton, HourlyForecastSkeleton } from "../loading";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -69,7 +68,7 @@ export function HourlyForecast({
       <h2 className="mb-2 text-xl font-bold text-slate-100">Today</h2>
       <div
         data-forecastloading={forecastLoading ? "true" : "false"}
-        className="data-forecastloading:overflow-x-hidden flex snap-x snap-mandatory gap-5 overflow-auto pb-4 text-center"
+        className="flex snap-x snap-mandatory gap-5 overflow-auto pb-4 text-center data-forecastloading:overflow-x-hidden"
       >
         {forecastLoading
           ? Array.from({ length: 8 }, (_, i) => (

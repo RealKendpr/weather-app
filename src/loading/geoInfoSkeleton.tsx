@@ -1,4 +1,4 @@
-export function GeoInfoSkeleton() {
+export default function GeoInfoSkeleton() {
   return (
     <div className="grid animate-pulse grid-cols-[repeat(2,_min-content)] grid-rows-[min-content] gap-x-4 gap-y-3">
       <div className="col-span-2 h-7 w-40 bg-slate-300"></div>
