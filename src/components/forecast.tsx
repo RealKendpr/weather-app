@@ -156,7 +156,7 @@ export function DaysForecast({
   return (
     <>
       <h2 className="mb-2 font-display text-xl font-bold text-slate-200">
-        Next 5 Days
+        Upcoming Days
       </h2>
       <div>
         {daysForecastLoading
@@ -172,7 +172,7 @@ export function DaysForecast({
                   <p className="justify-self-start font-display text-base ">
                     {handlTime(i.max.dt_txt).format("dddd")}
                   </p>
-                  <figure className="flex w-[90%] items-center justify-self-start">
+                  <figure className="flex items-center justify-self-start">
                     <div className="w-10 flex-shrink-0">
                       <img
                         loading="lazy"

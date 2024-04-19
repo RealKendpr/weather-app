@@ -32,6 +32,7 @@ function App() {
   const [windSpeed, setWindSpeed] = useState<number>(0);
 
   const [mainHeight, setMainHeight] = useState(window.innerHeight);
+  const [headerHeight, setHeaderHeight] = useState(0);
 
   const isWeatherInfo =
     weatherInfo !== null && weatherInfo !== undefined ? true : false;
@@ -79,9 +80,11 @@ function App() {
 
   const refresh = () => {
     setStatus("Loading");
+    setWeatherInfo(null);
     handleWeatherFetch(geoInfo);
   };
 
+  const wideViewport = window.matchMedia("(min-width: 1024px)").matches;
   const loadingSkeleton = status == "Loading" || status == "Error";
 
   return (
@@ -89,21 +92,25 @@ function App() {
       <WeatherContext.Provider value={weatherInfo}>
         {status == "Loading" || weatherInfo == null ? null : <Background />}
         <div
+          data-error={status == "Error"}
           style={{
             gridTemplateRows: `auto minmax(${mainHeight}px, auto) minmax(100dvh, auto)`,
           }}
-          data-error={status == "Error"}
-          className="grid min-h-dvh grid-cols-[minmax(375px,_1fr)] data-error:!max-h-dvh md:grid-cols-[1fr_minmax(400px,_auto)] md:!grid-rows-[auto_1fr]"
+          className="grid min-h-dvh grid-cols-[minmax(375px,_1fr)] data-error:!max-h-dvh lg:block"
         >
           <Header
             isWeatherInfo={isWeatherInfo}
             refresh={refresh}
             mainHeight={mainHeight}
             setMainHeight={setMainHeight}
+            setHeaderHeight={setHeaderHeight}
           />
           {status != "Error" ? (
             <>
-              <main className="grid grid-cols-[minmax(375px,_1fr)] grid-rows-[1fr_auto] gap-y-4 py-5 md:px-10">
+              <main
+                style={wideViewport ? { top: `${headerHeight}px` } : {}}
+                className="grid grid-cols-[minmax(375px,_1fr)] grid-rows-[1fr_auto] gap-y-4 py-5 lg:fixed lg:bottom-0 lg:left-0 lg:w-[65%] lg:px-10"
+              >
                 <div className="mx-auto grid w-11/12 lg:w-3/5">
                   {loadingSkeleton ? (
                     <>
@@ -144,7 +151,14 @@ function App() {
                   />
                 </div>
               </main>
-              <aside className="bg-[hsl(0,0%,11%)] px-3 py-6">
+              <aside
+                style={
+                  wideViewport
+                    ? { paddingTop: `calc(${headerHeight}px + 1.5rem)` }
+                    : {}
+                }
+                className="min-h-dvh bg-[hsl(0,0%,11%)] px-3 py-6 lg:ml-[65%] lg:w-[35%] lg:min-w-[410px]"
+              >
                 <DaysForecast
                   forecast={forecastInfo}
                   geoInfo={geoInfo}
