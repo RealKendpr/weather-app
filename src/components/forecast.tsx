@@ -89,6 +89,7 @@ export function HourlyForecast({
                 </div>
                 <div className="mx-auto grid min-h-[62px] w-2/3 items-center">
                   <img
+                    loading="lazy"
                     className="pointer-events-none selection:select-none"
                     src={`https://openweathermap.org/img/wn/${i.weather[0].icon}@4x.png`}
                     alt={i.weather[0].description}
@@ -174,6 +175,7 @@ export function DaysForecast({
                   <figure className="flex w-[90%] items-center justify-self-start">
                     <div className="w-10 flex-shrink-0">
                       <img
+                        loading="lazy"
                         className="pointer-events-none selection:select-none"
                         src={`https://openweathermap.org/img/wn/${i.max.weather[0].icon}@2x.png`}
                         alt=""

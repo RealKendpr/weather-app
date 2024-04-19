@@ -11,6 +11,7 @@ export function Background() {
         className="fixed h-full w-full bg-slate-800 opacity-30 data-isday:opacity-40"
       ></div>
       <img
+        loading="lazy"
         className="pointer-events-none h-full w-full select-none object-cover object-center"
         src={`./src/assets/backgrounds/${BackgroundCondition(IsDay)}`}
         alt=""
