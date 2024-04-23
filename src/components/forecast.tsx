@@ -183,7 +183,7 @@ export function DaysForecast({
                         alt=""
                       />
                     </div>
-                    <figcaption className="font-display overflow-x-auto text-ellipsis text-nowrap pb-[10px] text-[clamp(.6rem,_1vw,_.9rem)] text-[#b6a63e]">
+                    <figcaption className="font-display overflow-x-auto text-ellipsis whitespace-nowrap text-nowrap pb-[10px] text-[clamp(.6rem,_1vw,_.9rem)] text-[#b6a63e]">
                       {i.max.weather[0].description
                         .toLowerCase()
                         .replace(/\b\w/g, (s) => s.toUpperCase())}
