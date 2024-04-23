@@ -9,7 +9,7 @@ export function Buttons({
 }) {
   return (
     <button
-      className="grid size-8 place-items-center rounded-full bg-gray-300 p-2 font-bold disabled:cursor-not-allowed"
+      className="font-display grid size-8 place-items-center rounded-full bg-gray-300 p-2 font-bold disabled:cursor-not-allowed"
       disabled={
         type == "normal-refresh"
           ? isWeatherInfo

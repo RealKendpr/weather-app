@@ -35,7 +35,9 @@ export function Header({
       ref={header}
       className="flex w-full items-center justify-between bg-slate-600 px-2 py-2 lg:fixed lg:z-50 lg:col-span-2"
     >
-      <h1 className="text-lg font-bold text-slate-200">Simple Weather App</h1>
+      <h1 className="font-display text-lg font-bold text-slate-200">
+        Simple Weather App
+      </h1>
       <Buttons
         isWeatherInfo={isWeatherInfo}
         action={refresh}

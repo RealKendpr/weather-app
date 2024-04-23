@@ -65,7 +65,9 @@ export function HourlyForecast({
 
   return (
     <>
-      <h2 className="mb-2 text-xl font-bold text-slate-100">Today</h2>
+      <h2 className="font-display mb-2 text-xl font-bold text-slate-100">
+        Today
+      </h2>
       <div
         data-forecastloading={forecastLoading ? "true" : "false"}
         className="flex snap-x snap-mandatory gap-5 overflow-auto pb-4 text-center data-forecastloading:overflow-x-hidden"
@@ -78,7 +80,7 @@ export function HourlyForecast({
               <div
                 data-nowindicator={nowIndicator(i.dt_txt) ? "now" : "notnow"}
                 key={index}
-                className="relative max-h-32 min-w-28 max-w-28 flex-grow-0 snap-start overflow-hidden rounded-md border border-slate-500 bg-gray-400 p-2 font-semibold text-[hsl(0,0%,11%)] data-nowindicator:snap-center data-nowindicator:bg-[#b6a63e]"
+                className="font-display relative max-h-32 min-w-28 max-w-28 flex-grow-0 snap-start overflow-hidden rounded-md border border-slate-500 bg-gray-400 p-2 font-semibold text-[hsl(0,0%,11%)] data-nowindicator:snap-center data-nowindicator:bg-[#b6a63e]"
               >
                 <div className="text-[.9rem]">
                   {nowIndicator(i.dt_txt) ? (
@@ -155,24 +157,24 @@ export function DaysForecast({
 
   return (
     <>
-      <h2 className="mb-2 font-display text-xl font-bold text-slate-200">
+      <h2 className="font-display mb-2 text-xl font-bold text-slate-200">
         Upcoming Days
       </h2>
-      <div>
+      <ul>
         {daysForecastLoading
           ? Array.from({ length: 5 }, (_, i) => (
               <DaysForecastSkeleton key={i} />
             ))
           : minMaxForecast.map((i, index) => {
               return (
-                <div
+                <li
                   key={index}
                   className="relative grid w-full grid-cols-3 items-center justify-items-center px-2 pb-8 pt-4 text-gray-400 after:absolute after:bottom-0 after:h-px after:w-full after:bg-white after:opacity-20 after:content-['']"
                 >
-                  <p className="justify-self-start font-display text-base ">
+                  <p className="font-display justify-self-start text-base">
                     {handlTime(i.max.dt_txt).format("dddd")}
                   </p>
-                  <figure className="flex items-center justify-self-start">
+                  <figure className="flex max-w-[19ch] items-end justify-self-start">
                     <div className="w-10 flex-shrink-0">
                       <img
                         loading="lazy"
@@ -181,19 +183,19 @@ export function DaysForecast({
                         alt=""
                       />
                     </div>
-                    <figcaption className="text-clip whitespace-nowrap font-display text-[clamp(.75rem,_50%,_1rem)] text-[#b6a63e]">
+                    <figcaption className="font-display overflow-x-auto text-ellipsis text-nowrap pb-[10px] text-[clamp(.6rem,_1vw,_.9rem)] text-[#b6a63e]">
                       {i.max.weather[0].description
                         .toLowerCase()
                         .replace(/\b\w/g, (s) => s.toUpperCase())}
                     </figcaption>
                   </figure>
-                  <p className="justify-self-end font-display text-3xl font-bold">
+                  <p className="font-display justify-self-end text-3xl font-bold">
                     {i.max.main.temp}&deg;
                   </p>
-                </div>
+                </li>
               );
             })}
-      </div>
+      </ul>
     </>
   );
 }

@@ -11,14 +11,14 @@ export function WeatherDisplay({
     <div>
       <h3
         data-isday={isDay ? "true" : "false"}
-        className="text-center font-display text-[5.5rem] font-bold leading-tight text-slate-200 data-isday:text-slate-900"
+        className="font-display text-center text-[5.5rem] font-bold leading-tight text-slate-200 data-isday:text-slate-900"
       >
         {weatherInfo?.main.temp}&deg;c
       </h3>
       <div className="flex flex-col items-center">
         <div
           data-isday={isDay ? "true" : "false"}
-          className="flex items-center gap-1 font-display text-xl font-semibold text-slate-200 data-isday:text-slate-900"
+          className="font-display flex items-center gap-1 text-xl font-semibold text-slate-200 data-isday:text-slate-900"
         >
           <span>
             <svg
