@@ -157,7 +157,7 @@ function App() {
                     ? { paddingTop: `calc(${headerHeight}px + 1.5rem)` }
                     : {}
                 }
-                className="min-h-dvh bg-[hsl(0,0%,11%)] px-3 py-6 lg:ml-[65%] lg:w-[35%] lg:min-w-[410px]"
+                className="min-h-dvh bg-[hsl(0,0%,11%)] px-3 py-6 lg:ml-[65%] lg:w-[35%] lg:min-w-[min-content]"
               >
                 <DaysForecast
                   forecast={forecastInfo}
